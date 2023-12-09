@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Form Konsultasi</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .navbar-brand img {
+            border-radius: 50%;
+        }
+
+        .navbar-brand,
+        .navbar-brand .navbar-text {
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: bold;
+        }
+
+        label:not(.placeholder-label) {
+            font-weight: bold;
+        }
+
+        h2 {
+            font-weight: bold;
+        }
+
+        body,
+        html {
+            height: 100%;
+            position: relative;
+        }
+
+        body {
+            padding-bottom: 100px;
+        }
+
+        .form-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #222831;
+            color: white;
+            text-align: center;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            margin: 0;
+            padding-bottom: 100px; 
+            background-image: url('../static/paw.jpg');
+            background-color: rgba(255, 255, 255, 0.5); 
+            background-blend-mode: lighten; 
+            background-size: cover; 
+            min-height: 100vh; 
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('saveBtn').addEventListener('click', function () {
+                saveFormData(); 
+            });
+        });
+
+        function saveFormData() {
+            const form = document.getElementById('konsultasiForm');
+            const formData = new FormData(form);
+
+            fetch('/save_form_data', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); 
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function clearForm() {
+            const namaPemilik = document.getElementById('namaPemilik');
+            const namaKucing = document.getElementById('namaKucing');
+            const jenisKucing = document.getElementById('jenisKucing');
+            const usiaKucing = document.getElementById('usiaKucing');
+            const keluhan = document.getElementById('keluhan');
+            const fotoKeluhan = document.getElementById('fotoKeluhan');
+            const buktiPembayaran = document.getElementById('buktiPembayaran');
+
+            namaPemilik.value = '';
+            namaKucing.value = '';
+            jenisKucing.value = '';
+            usiaKucing.value = '';
+            keluhan.value = '';
+            fotoKeluhan.value = '';
+            buktiPembayaran.value = '';
+        }
+    </script>
+
+<body style="position: relative;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="../static/logo.png" alt="Logo" height="50" class="mr-2">
+                <span class="font-weight-bold">PawCare</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Konsultasi
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
+                            <a class="dropdown-item" href="#">Daftar Dokter</a>
+                            <a class="dropdown-item" href="{{ url_for('show_riwayat_konsultasi') }}">Riwayat Konsultasi</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('show_rekam_medis') }}">Rekam Medis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Ulasan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="form-box">
+                    <h2 class="mb-4 text-center">Form Konsultasi</h2>
+                    <form id="konsultasiForm" method="POST" action="/save_form_data" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="namaPemilik">Nama Pemilik</label>
+                            <input type="text" class="form-control" id="namaPemilik" name="namaPemilik"
+                                placeholder="Masukkan nama pemilik">
+                        </div>
+                        <div class="form-group">
+                            <label for="namaKucing">Nama Kucing</label>
+                            <input type="text" class="form-control" id="namaKucing" name="namaKucing"
+                                placeholder="Masukkan nama kucing">
+                        </div>
+                        <div class="form-group">
+                            <label for="jenisKucing">Jenis Kucing</label>
+                            <input type="text" class="form-control" id="jenisKucing" name="jenisKucing"
+                                placeholder="Masukkan jenis kucing">
+                        </div>
+                        <div class="form-group">
+                            <label for="usiaKucing">Usia Kucing</label>
+                            <input type="number" class="form-control" id="usiaKucing" name="usiaKucing"
+                                placeholder="Masukkan usia kucing">
+                        </div>
+                        <div class="form-group">
+                            <label for="keluhan">Keluhan</label>
+                            <textarea class="form-control" id="keluhan" name="keluhan" rows="3"
+                                placeholder="Masukkan keluhan"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="fotoKeluhan">Foto Keluhan</label>
+                            <input type="file" class="form-control-file" id="fotoKeluhan" name="fotoKeluhan">
+                        </div>
+                        <div class="form-group">
+                            <label for="buktiPembayaran">Bukti Pembayaran</label>
+                            <input type="file" class="form-control-file" id="buktiPembayaran" name="buktiPembayaran">
+                        </div>
+                        <div class="row mt-4 mb-3">
+                            <div class="col text-right">
+                                <button type="submit" class="btn btn-primary" id="saveBtn"
+                                    style="background-color: #00ADB5">Save</button>
+                                <button type="button" class="btn btn-secondary" style="background-color: #393E46;"
+                                    onclick="clearForm()">Clear</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

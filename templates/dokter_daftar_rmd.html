@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Rekam Medis Dokter</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .navbar-brand img {
+            border-radius: 50%;
+        }
+
+        .navbar-brand,
+        .navbar-brand .navbar-text {
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: bold;
+        }
+
+        .detail-button {
+            width: 100%;
+        }
+
+        h2 {
+            font-weight: bold;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #ffffff;
+            color: white;
+            text-align: center;
+            padding: 20px 0; 
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            margin: 0;
+            padding-bottom: 100px; 
+            background-image: url('../static/paw.jpg'); 
+            background-color: rgba(255, 255, 255, 0.5); 
+            background-blend-mode: lighten; 
+            background-size: cover; 
+            min-height: 100vh; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+    
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #f2f2f2;
+        }
+    
+        .record-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+        }
+    
+    </style>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="../static/logo.png" alt="Logo" height="50" class="mr-2">
+                <span class="font-weight-bold">PawCare</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Rekam Medis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Ulasan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5 record-box">
+        <h2 class="mb-4">Rekam Medis</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nama Pemilik</th>
+                    <th>Nama Kucing</th>
+                    <th>Jenis Kucing</th>
+                    <th>Usia</th>
+                    <th>Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Nama Pemilik 1</td>
+                    <td>Nama Kucing 1</td>
+                    <td>Jenis Kucing 1</td>
+                    <td>Usia 1</td>
+                    <td><button class="btn btn-primary detail-button" style="background-color: #4d4a7a;">Detail</button></td>
+                </tr>
+                <tr>
+                    <td>Nama Pemilik 2</td>
+                    <td>Nama Kucing 2</td>
+                    <td>Jenis Kucing 2</td>
+                    <td>Usia 2</td>
+                    <td><button class="btn btn-primary detail-button" style="background-color: #4d4a7a;">Detail</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+          <span class="text-muted">
+            <strong style="font-size: 24px;">Pawcare</strong><br>
+            &copy; 2023 oleh Tim Oracle Learning X
+          </span>
+        </div>
+      </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

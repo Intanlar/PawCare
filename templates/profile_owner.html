@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Profile Owner</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <!-- Letakkan script berikut di bawah script Bootstrap dan sebelum tag </body> -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <style>
+    /* General Styles */
+    * {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Navbar Styles */
+    .navbar-brand img {
+      border-radius: 50%;
+    }
+
+    .navbar-brand,
+    .navbar-brand .navbar-text,
+    .navbar-nav .nav-link {
+      font-weight: bold;
+    }
+
+    .hero-body h1.title {
+      font-family: 'Montserrat', sans-serif;
+      color: #1e2b2c;
+    }
+
+    .profile-image-container,
+    .level.is-mobile,
+    #btns-me {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .level-item.is-sparta,
+    .level-item.is-sparta.is-outlined {
+      background-color: #1e2b2c;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    /* Buttons */
+    .edit-profile-button,
+    .logout-button {
+      background-color: #252525;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 100px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    /* Form Styles */
+    .form-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: #f9f9fc;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-top: 2rem;
+    }
+
+    .form-box {
+      width: 45%;
+      max-width: 400px;
+    }
+
+    .label {
+      color: #111111;
+      font-weight: bold;
+    }
+
+    .input,
+    .textarea {
+      border: 1px solid #141414;
+      border-radius: 5px;
+      padding: 8px;
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .button {
+      margin-top: 10px;
+    }
+
+    /* Body Styles */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      position: relative;
+      margin: 0;
+      padding-bottom: 100px;
+      background-image: url('/static/paw.jpg');
+      background-color: rgba(255, 255, 255, 0.5);
+      background-blend-mode: lighten;
+      background-size: cover;
+      min-height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="{{ url_for('static', filename='logo.png') }}" height="50" class="mr-2">
+        <span class="font-weight-bold">PawCare</span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Konsultasi
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
+              <a class="dropdown-item" href="#">Daftar Dokter</a>
+              <a class="dropdown-item" href="#">Riwayat Konsultasi</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Rekam Medis</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Ulasan</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Profil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">Profile Owner</h1>
+
+      <div class="profile-image-container">
+        <img class="profile-image" src="path/to/your/profile-image.jpg" alt="Profile Image">
+      </div>
+
+      <div id="btns-me" class="box is-mobile">
+        <a class="button level-item has-text-centered edit-profile-button" aria-label="edit" data-toggle="modal"
+          data-target="#modal-edit">
+          Edit Profile&nbsp;&nbsp;&nbsp;<span class="icon is-small"><i class="bi bi-pencil"
+              aria-hidden="true"></i></span>
+        </a>
+
+        <a class="button level-item has-text-centered logout-button" aria-label="logout" href="/logout">
+          Logout&nbsp;&nbsp;&nbsp;<span class="icon is-small"><i class="bi bi-box-arrow-right"
+              aria-hidden="true"></i></span>
+        </a>
+
+      </div>
+
+      <!-- Formulir -->
+      <div class="form-container">
+        <!-- Formulir Kiri -->
+        <div class="form-box">
+          <div class="mb-3">
+            <label for="exampleFormControlInput1" class="label">Nama Lengkap :</label>
+            <div class="control">
+              <input type="text" class="input" id="exampleFormControlInput1" placeholder="nama lengkap">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleFormControlInput2" class="label">Email :</label>
+            <div class="control">
+              <input type="email" class="input" id="exampleFormControlInput2" placeholder="nama@example.com">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleFormControlInput3" class="label">Nomor Telephone :</label>
+            <div class="control">
+              <input type="text" class="input" id="exampleFormControlInput3" placeholder="masukan nomor anda">
+            </div>
+          </div>
+        </div>
+        <!-- Akhir Formulir Kiri -->
+
+        <!-- Formulir Kanan -->
+        <div class="form-box">
+          <div class="mb-3">
+            <label for="exampleFormControlInput4" class="label">Username :</label>
+            <div class="control">
+              <input type="text" class="input" id="exampleFormControlInput4" placeholder="masukan username anda">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleFormControlInput5" class="label">Password :</label>
+            <div class="control">
+              <input type="text" class="input" id="exampleFormControlInput5" placeholder="masukan password anda">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea" class="label">Alamat lengkap :</label>
+            <div class="control">
+              <textarea class="textarea" id="exampleFormControlTextarea" placeholder="alamat rumah anda"></textarea>
+            </div>
+          </div>
+        </div>
+        <!-- Akhir Formulir Kanan -->
+      </div>
+      <!-- Akhir Formulir -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+      <span class="text-muted">
+        <strong style="font-size: 24px;">Pawcare</strong><br>
+        &copy; 2023 oleh Tim Oracle Learning X
+      </span>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+<!-- Modal Edit Profile -->
+<div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal-edit-label"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-edit-label">Edit Profile</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Formulir Edit Profile -->
+        <form id="edit-profile-form" action="{{ url_for('save_img') }}" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="edit-profile-name">Nama Lengkap:</label>
+            <input type="text" class="form-control" id="edit-profile-name" name="name_give" placeholder="Nama Lengkap">
+          </div>
+          <div class="form-group">
+            <label for="edit-profile-email">Email:</label>
+            <input type="email" class="form-control" id="edit-profile-email" name="about_give" placeholder="Email">
+          </div>
+          <div class="form-group">
+            <label for="edit-profile-phone">Nomor Telephone:</label>
+            <input type="text" class="form-control" id="edit-profile-phone" name="about_give"
+              placeholder="Nomor Telephone">
+          </div>
+          <div class="form-group">
+            <label for="edit-profile-username">Username:</label>
+            <input type="text" class="form-control" id="edit-profile-username" name="about_give" placeholder="Username">
+          </div>
+          <div class="form-group">
+            <label for="edit-profile-password">Password:</label>
+            <input type="password" class="form-control" id="edit-profile-password" name="about_give"
+              placeholder="Password">
+          </div>
+          <div class="form-group">
+            <label for="edit-profile-address">Alamat Lengkap:</label>
+            <textarea class="form-control" id="edit-profile-address" name="about_give" rows="3"
+              placeholder="Alamat Lengkap"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="edit-profile-image">Upload Foto Profile:</label>
+            <input type="file" class="form-control-file" id="edit-profile-image" name="file_give">
+          </div>
+          <button type="submit" class="btn btn-secondary">Simpan Perubahan</button>
+        </form>
+        <!-- Akhir Formulir Edit Profile -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Akhir Modal Edit Profile -->
+</body>
+
+</html>
