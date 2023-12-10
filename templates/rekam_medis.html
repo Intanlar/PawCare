@@ -104,19 +104,19 @@
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Konsultasi
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
+                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
                             <a class="dropdown-item" href="#">Daftar Dokter</a>
-                            <a class="dropdown-item" href="{{ url_for('show_riwayat_konsultasi') }}">Riwayat Konsultasi</a>
-                        </div>
+                            <li><a class="dropdown-item" href="{{ url_for('riwayat_konsultasi') }}">Riwayat Konsultasi</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('show_rekam_medis') }}">Rekam Medis</a>
+                        <a class="nav-link"  href="{{ url_for('daftar_rekam_medis') }}">Rekam Medis</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Ulasan</a>
+                        <a class="nav-link" href="{{ url_for('daftar_ulasan') }}">Ulasan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
+                        <a class="nav-link" href="{{ url_for('profile') }}">Profil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Login</a>
@@ -133,7 +133,7 @@
             <img src="static/foto_dokter_1.jpg" alt="Foto Profil Dokter 1">
             <div class="info">
                 <h4>Nama Dokter 1</h4>
-                <a href="{{ url_for('show_detail_rekam_medis', doctor_id='id_dokter_disini') }}"><button class="btn btn-lihat">Lihat</button></a>
+                <a href="{{ url_for('detail_rekam_medis', doctor_id='id_dokter_disini') }}"><button class="btn btn-lihat">Lihat</button></a>
             </div>
         </div>
         
@@ -141,7 +141,7 @@
             <img src="static/foto_dokter_2.jpg" alt="Foto Profil Dokter 2">
             <div class="info">
                 <h4>Nama Dokter 2</h4>
-                <a href="{{ url_for('show_detail_rekam_medis', doctor_id='id_dokter_disini') }}"><button class="btn btn-lihat">Lihat</button></a>
+                <a href="{{ url_for('detail_rekam_medis', doctor_id='id_dokter_disini') }}"><button class="btn btn-lihat">Lihat</button></a>
             </div>
         </div>
         

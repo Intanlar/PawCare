@@ -30,17 +30,17 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Daftar Dokter</a></li>
-                                <li><a class="dropdown-item" href="#">Riwayat Konsultasi</a></li>
+                                <li><a class="dropdown-item" href="/riwayat">Riwayat Konsultasi</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Rekam Medis</a>
+                            <a class="nav-link"  href="/daftar_rekam_medis">Rekam Medis</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Ulasan</a>
+                            <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Profil</a>
+                            <a class="nav-link" href="/profile">Profil</a>
                         </li>
                         <li class="nav-item dropdown">
                             <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -92,7 +92,7 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <h1 class="hBanner">Paw Care</h1>
+                    <h1 class="hBanner">PawCare</h1>
                     <p class="textBanner">Klinik Hewan adalah tempat usaha Pelayanan Jasa Medik Veteriner yang memiliki
                         Dokter
                         Hewan praktik dan fasilitas untuk penanganan hewan. Ambulatori adalah pelayanan
@@ -105,40 +105,37 @@
         </div>
     </section>
 
-    <section id="layanan">
+    <section id="layanan" class="py-5">
         <div class="container">
+            <h2 class="text-center mb-5" style="font-weight: bold;">Layanan Kami</h2>
             <div class="row">
-                <h1 class="text-center">Layanan Kami</h1>
-                <div class="col">
-                    <img src="https://img.freepik.com/free-photo/doctor-with-stethoscope_1401-44.jpg?w=740&t=st=1701932253~exp=1701932853~hmac=1fa1604d72d5b52752a68b85b67667c842968b97b0246d0d0100592a6506121f"
-                        class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h2 class="card-title">Kunsultasi Online</h2>
-                        <p class="card-text">Menyediakan konsultasi online dengan baik.</p>
+                <div class="col-md-4 mb-4 text-center">
+                        <img src="{{ url_for('static', filename='img/landingForm.png') }}" class="img-fluid" alt="..."  style="height: 350px; width: 90%;" >
+                        <div class="card-body">
+                            <h2 class="card-title">Konsultasi Online</h2>
+                            <p class="card-text" style="font-size: 20px;">Menyediakan konsultasi online dengan baik.</p>
                     </div>
                 </div>
-                <div class="col">
-                    <img src="https://img.freepik.com/free-photo/stethoscope-patient-information_1232-4432.jpg?w=1380&t=st=1701932268~exp=1701932868~hmac=ba53e0fd3e90f5a4d3e74235bd7932add72d41d431b36d8426c214357d37ce8a"
-                        class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h2 class="card-title">Rekam Medis</h2>
-                        <p class="card-text">Menyediakan hasil rekam medis yang tepat dan cepat</p>
+                <div class="col-md-4 mb-4 text-center">
+                        <img src="{{ url_for('static', filename='img/landingRiwayat.png') }}"class="img-fluid" alt="..."  style="height: 350px; width: 90%;" >
+                        <div class="card-body">
+                            <h2 class="card-title">Rekam Medis</h2>
+                            <p class="card-text" style="font-size: 20px;">Menyediakan hasil rekam medis yang tepat dan cepat</p>
                     </div>
                 </div>
-                <div class="col">
-                    <img src="https://img.freepik.com/free-photo/doctor-with-stethoscope-showing-blank-digital-tablet-pc_1401-28.jpg?w=826&t=st=1701932222~exp=1701932822~hmac=d539538535aea0580869a430020effde85af0a4a2cdb414f2a7847982bd0d07d"
-                        class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h2 class="card-title">Dokter Hewan Terpecaya</h2>
-                        <p class="card-text">DOkter dengan lulusan terbaik dan berpengalaman.</p>
-                    </div>
+                <div class="col-md-4 mb-4 text-center">
+                        <img src="{{ url_for('static', filename='img/landingDokter.png') }}"class="img-fluid" alt="..."  style="height: 350px; width: 90%;" >
+                        <div class="card-body">
+                            <h2 class="card-title">Dokter Hewan Terpercaya</h2>
+                            <p class="card-text" style="font-size: 20px;">Dokter dengan lulusan terbaik dan berpengalaman.</p>
+                        </div>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="konsul">
-        <h1 class="text-center">Langkah-langkah Konsultasi Online</h1>
+        <h2 class="text-center" style="font-weight: bold;">Langkah-langkah Konsultasi Online</h2>
         <ol>
             <li>
                 <div class="icon"><i class="fa-solid fa-bicycle"></i></div>

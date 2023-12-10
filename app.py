@@ -29,7 +29,10 @@ DB_NAME = os.getenv("DB_NAME")
 
 client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
-collection = db.riwayat_konsultasi  
+
+col_konsultasi = db.riwayat_konsultasi
+col_user = db.owner
+col_dokter = db.dokter
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -54,7 +57,7 @@ def login():
 
 @app.route("/docter")
 def docter():
-    return render_template("docter.html")
+    return render_template("dokter_login.html")
 
 @app.route("/register")
 def register():
@@ -62,8 +65,7 @@ def register():
 
 @app.route("/regisdocter")
 def regisdocter():
-    return render_template("register-docter.html")
-
+    return render_template("dokter_register.html")
 
 
 @app.route('/form_konsultasi')
@@ -71,20 +73,23 @@ def form_konsultasi():
     return render_template('form_konsultasi.html')
 
 @app.route('/riwayat')
-def show_riwayat_konsultasi():
-    riwayat_konsultasi = list(collection.find({}))
+def riwayat_konsultasi():
+    riwayat_konsultasi = list(col_konsultasi.find({}))
     return render_template('riwayat_konsultasi.html', riwayat_konsultasi=riwayat_konsultasi)
 
-@app.route('/rekam_medis')
-def show_rekam_medis():
+@app.route('/daftar_rekam_medis')
+def daftar_rekam_medis():
     return render_template('rekam_medis.html')
 
 @app.route('/detail_rekam_medis/<doctor_id>')
-def show_detail_rekam_medis(doctor_id):
-    doctor_info = collection.find_one({'_id': ObjectId(doctor_id)})
+def detail_rekam_medis(doctor_id):
+    doctor_info = col_konsultasi.find_one({'_id': ObjectId(doctor_id)})
 
     return render_template('detail_rekamMedis.html', doctor_info=doctor_info)
 
+@app.route('/dokter_rmd')
+def dokter_rekam_medis():
+    return render_template('dokter_rmd.html')
 
 
 @app.route('/profile')
@@ -93,19 +98,19 @@ def profile():
 
 @app.route('/profile_dokter')
 def dokter():
-    return render_template('profile_dokter.html')
+    return render_template('dokter_profile.html')
 
 @app.route('/detail_rmd')
 def detail():
-    return render_template('detail_rmd.html')
+    return render_template('dokter_detail_rmd.html')
 
 @app.route('/form_ulasan')
 def form1():
     return render_template('form_ulasan.html')
 
-@app.route('/daftar_dokter')
-def daftar():
-    return render_template('daftar_dokter.html')
+@app.route('/daftar_ulasan')
+def daftar_ulasan():
+    return render_template('daftar_ulasan.html')
 
 @app.route('/halaman_ulasan')
 def halaman():
@@ -114,7 +119,7 @@ def halaman():
 
 # POST
 
-@app.route('/save_form_data', methods=['POST'])
+@app.route('/save_form_konsultasi', methods=['POST'])
 def save_form_data():
     if request.method == 'POST':
         nama_pemilik = request.form['namaPemilik']
@@ -134,7 +139,7 @@ def save_form_data():
             filename_pembayaran = secure_filename(bukti_pembayaran.filename)
             bukti_pembayaran.save(os.path.join(app.config['UPLOAD_FOLDER'], filename_pembayaran))
 
-        result = collection.insert_one({
+        result = col_konsultasi.insert_one({
             'nama_pemilik': nama_pemilik,
             'nama_kucing': nama_kucing,
             'jenis_kucing': jenis_kucing,
