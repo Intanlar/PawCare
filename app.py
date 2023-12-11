@@ -79,13 +79,12 @@ def riwayat_konsultasi():
 
 @app.route('/daftar_rekam_medis')
 def daftar_rekam_medis():
-    return render_template('rekam_medis.html')
+    return render_template('daftar_rekam_medis.html')
 
 @app.route('/detail_rekam_medis/<doctor_id>')
 def detail_rekam_medis(doctor_id):
-    doctor_info = col_konsultasi.find_one({'_id': ObjectId(doctor_id)})
-
-    return render_template('detail_rekamMedis.html', doctor_info=doctor_info)
+    diagnosa = col_konsultasi.find_one({'_id': ObjectId(doctor_id)})
+    return render_template('detail_rekamMedis.html', diagnosa=diagnosa)
 
 @app.route('/dokter_rmd')
 def dokter_rekam_medis():

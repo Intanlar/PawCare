@@ -25,17 +25,17 @@
         .navbar-nav .nav-link {
             font-weight: bold;
         }
-        
+
         h2 {
             font-weight: bold;
         }
 
 
-        
+
         .review-button {
             text-align: right;
         }
-        
+
         .footer {
             position: absolute;
             bottom: 0;
@@ -48,14 +48,14 @@
             font-family: 'Montserrat', sans-serif;
             position: relative;
             margin: 0;
-            padding-bottom: 100px; 
+            padding-bottom: 100px;
             background-image: url('../static/paw.jpg');
-            background-color: rgba(255, 255, 255, 0.5); 
-            background-blend-mode: lighten; 
-            background-size: cover; 
-            min-height: 100vh; 
+            background-color: rgba(255, 255, 255, 0.5);
+            background-blend-mode: lighten;
+            background-size: cover;
+            min-height: 100vh;
         }
-        
+
         .record-box {
             background-color: white;
             padding: 20px;
@@ -90,7 +90,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="/">
-            <img src="static/img/logotrans.png" width="80px">
+                <img src="static/img/logotrans.png" width="80px">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -98,96 +98,103 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-                <div class="d-flex" role="search">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Konsultasi
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
-                                <a class="dropdown-item" href="#">Daftar Dokter</a>
-                                <li><a class="dropdown-item" href="/riwayat_konsultasi">Riwayat Konsultasi</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link"  href="/daftar_rekam_medis">Rekam Medis</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/profile">Profil</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <div class="d-flex" role="search">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Konsultasi
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
+                            <a class="dropdown-item" href="#">Daftar Dokter</a>
+                            <li><a class="dropdown-item" href="/riwayat_konsultasi">Riwayat Konsultasi</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/daftar_rekam_medis">Rekam Medis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Profil</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <button type="button" class="btn btn-outline" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop">
                             Login
-                            </button>
-                        </li>
-                    </ul>
-                </div>
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
+        </div>
     </nav>
-    
+
 
     <div class="container mt-5">
         <div class="record-box">
             <h2>Detail Rekam Medis</h2>
 
-    <div class="header">
-        <div class="info">
-            <p>Nama: Nama Dokter</p>
-            <p>Lokasi Klinik: Lokasi Klinik</p>
-            <p>Nomor HP: Nomor HP</p>
-        </div>
-        <div class="review-button">
-            <button class="btn btn-primary" style="background-color: #4d4a7a">Beri Penilaian</button>
+            <div class="header">
+                <div class="info">
+                    <p>Nama: Nama Dokter</p>
+                    <p>Lokasi Klinik: Lokasi Klinik</p>
+                    <p>Nomor HP: Nomor HP</p>
+                </div>
+                <div class="review-button">
+                    <button class="btn btn-primary" style="background-color: #4d4a7a">Beri Penilaian</button>
+                </div>
+            </div>
+            <div class="record-box">
+                <h2>Detail Rekam Medis</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nama Kucing</th>
+                            <th>Jenis Kucing</th>
+                            <th>Usia Kucing</th>
+                            <th>Keluhan</th>
+                            <th>Foto Keluhan</th>
+                            <th>Diagnosa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ diagnosa['nama_kucing'] }}</td>
+                            <td>{{ diagnosa['jenis_kucing'] }}</td>
+                            <td>{{ diagnosa['usia_kucing'] }}</td>
+                            <td>{{ diagnosa['keluhan'] }}</td>
+                            <td>
+                                {% if diagnosa['foto_keluhan'] %}
+                                    <img src="{{ url_for('static', filename='uploads/' + diagnosa['foto_keluhan']) }}" alt="Foto Keluhan" height="50">
+                                {% else %}
+                                    Tidak ada foto
+                                {% endif %}
+                            </td>
+                            <td>{{ diagnosa['diagnosa'] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>            
         </div>
     </div>
-    <div class="record-table">
-        <h5>Detail Rekam Medis</h5>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nama Kucing</th>
-                    <th>Jenis Kucing</th>
-                    <th>Usia</th>
-                    <th>Keluhan</th>
-                    <th>Gambar</th>
-                    <th>Diagnosa</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Nama Kucing</td>
-                    <td>Jenis Kucing</td>
-                    <td>Usia</td>
-                    <td>Keluhan</td>
-                    <td>Gambar</td>
-                    <td>Diagnosa</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-        </div>
-</div>
 
 
-<footer class="footer mt-auto py-3 bg-light">
-    <div class="container text-center">
-      <span class="text-muted">
-        <strong style="font-size: 24px;">Pawcare</strong><br>
-        &copy; 2023 oleh Tim Oracle Learning X
-      </span>
-    </div>
-  </footer>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">
+                <strong style="font-size: 24px;">Pawcare</strong><br>
+                &copy; 2023 oleh Tim Oracle Learning X
+            </span>
+        </div>
+    </footer>
 
 </body>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
