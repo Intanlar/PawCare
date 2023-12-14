@@ -38,7 +38,7 @@
             font-weight: bold;
         }
 
-        button[type="button1"] {
+        button[type="submit"] {
             background-color: #00ADB5;
             color: #ffffff;
             border: none;
@@ -47,7 +47,7 @@
             cursor: pointer;
         }
 
-        button[type="button1"]:hover {
+        button[type="submit"]:hover {
             background-color: #00858a;
         }
 
@@ -60,6 +60,19 @@
             text-align: center;
         }
     </style>
+
+    <script>
+        function clearForm() {
+          document.getElementById('namalengkap').value = '';
+          document.getElementById('username').value = '';
+          document.getElementById('nohp').value = '';
+          document.getElementById('email').value = '';
+          document.getElementById('password').value = '';
+          document.getElementById('alamat').value = '';
+          document.getElementById('pendidikan').value = '';
+          document.getElementById('harga').value = '';
+        }
+      </script>
 </head>
 
 <body>
@@ -139,7 +152,7 @@
                                 {{ form.alamat(class="form-control") }}
                             </div>
                             <div class="mb-3">
-                                <label for="pendidikan" class="form-label">Pendidikan:</label>
+                                <label for="pendidikan" class="form-label">Pendidikan Terakhir:</label>
                                 {{ form.pendidikan(class="form-control") }}
                             </div>
                             <div class="mb-3">
@@ -151,6 +164,7 @@
                                 {{ form.foto(class="form-control") }}
                             </div>
                             <button type="submit" class="btn btn-primary">Register</button>
+                            <button type="button" class="btn btn-outline-dark ml-2" onclick="clearForm()">Clear</button>
                             <p class="mt-2 text-center">
                                 Sudah punya akun?<a href="/dokterLogin">Login</a>
                             </p>

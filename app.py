@@ -1,12 +1,12 @@
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
-
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from flask_login import logout_user
 import jwt
 from pymongo import MongoClient
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed, FileField
 from datetime import datetime
 from wtforms import StringField, PasswordField, TextAreaField
 from wtforms.validators import InputRequired, Email, Length
@@ -58,9 +58,14 @@ def get_next_filename(folder_path, prefix):
     last_index = max([int(f[len(prefix):]) for f in files])
     return f"{prefix}{last_index + 1}"
 
+@app.route("/")
+def home():
+    return render_template("index.html")
+
 ###############################################################################################
 # Regis & login
 
+# --------------------------- auth owner ---------------------------
 class User(UserMixin):
     pass
 
@@ -73,7 +78,30 @@ def load_user(user_id):
         return user
     return None
 
-class RegistrationForm(FlaskForm):
+def save_photo(profile_image, folder='static/foto/owner/profile/'):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    if profile_image:
+        filename = secure_filename(profile_image.filename)
+        filepath = os.path.join(folder, filename)
+        profile_image.save(filepath)
+        return filename
+    return None
+
+def save_photo(bukti_pembayaran, folder='static/foto/owner/bukti_pembayaran/'):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    if bukti_pembayaran:
+        filename = secure_filename(bukti_pembayaran.filename)
+        filepath = os.path.join(folder, filename)
+        bukti_pembayaran.save(filepath)
+        return filename
+    return None
+
+
+class UserRegistrationForm(FlaskForm):
     namalengkap = StringField('Nama Lengkap', validators=[InputRequired(), Length(min=4, max=50)])
     username = StringField('Username', validators=[InputRequired(), Length(min=4, max=25)])
     nohp = StringField('No HP', validators=[InputRequired(), Length(min=10, max=15)])
@@ -81,119 +109,25 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
     alamat = TextAreaField('Alamat', validators=[InputRequired(), Length(min=10, max=200)])
 
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=25)])
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-@app.route("/dokterDaftar")
-def dokterDaftar():
-    doctors = db.doctors.find()
-    return render_template("dokterDaftar.html", doctors=doctors)
-
-
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
- 
-        user_data = db.users.find_one({'username': username})
-        if user_data and user_data['password'] == hashlib.sha256(password.encode()).hexdigest():
-            user = User()
-            user.id = user_data['_id']
-            login_user(user)
-            return redirect(url_for('ownerDashboard'))
-        else:
-            return jsonify({"result": "failure", "message": "Invalid username or password."})
-
-    return render_template("login.html", form=form)
-
-#Dokter view
-
-class Doctor(UserMixin):
-    pass
-
-class DokterRegistrationForm(FlaskForm):
-    namalengkap = StringField('Nama Lengkap', validators=[InputRequired(), Length(min=4, max=50)])
-    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=25)])
-    nohp = StringField('No HP', validators=[InputRequired(), Length(min=10, max=15)])
-    email = StringField('Email', validators=[InputRequired(), Email(), Length(max=50)])
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
-    alamat = TextAreaField('Alamat', validators=[InputRequired(), Length(min=10, max=200)])
-    lokasiklinik = TextAreaField('Lokasi Klinik', validators=[InputRequired(), Length(min=4, max=200)]) 
-    pendidikanterakhir = StringField('Pendidikan Terakhir', validators=[InputRequired(), Length(min=4, max=100)])
-    harga = StringField('Harga', validators=[InputRequired(), Length(min=4, max=100)])
-
-class DoctorLoginForm(FlaskForm):
+class UserLoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
 
-@login_manager.user_loader
-def load_doctor(doctor_id):
-    doctor_data = db.doctors.find_one({'_id': doctor_id})
-    if doctor_data:
-        doctor = Doctor()
-        doctor.id = doctor_data['_id']
-        return doctor
-    return None
-
-@app.route("/dokterDashboard")
-@login_required
-def dokterDashboard():
-    return render_template("dokterDashboard.html", user=current_user)
-
-@app.route("/dokterLogin", methods=['GET', 'POST'])
-def dokterLogin():
-    form = LoginForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-
-        doctor_data = db.dokter.find_one({'username': username})
-
-        if doctor_data and check_password_hash(doctor_data['password'], password): 
-            doctor = User()
-            doctor.id = doctor_data['_id']
-            login_user(doctor)
-            return redirect(url_for('dokterDashboard'))
-        else:
-            return jsonify({"result": "failure", "message": "Invalid username or password."})
-
-    return render_template("dokterLogin.html", form=form)
-
-
-
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm()
+    form = UserRegistrationForm()
     if request.method == 'POST' and form.validate_on_submit():
         try:
             data = form.data
             profile_image = request.files['profile_image']
             bukti_pembayaran = request.files['bukti_pembayaran']
+            
+            profile_filename = save_photo(profile_image)
+            bukti_filename = save_photo(bukti_pembayaran)
             existing_user = db.users.find_one({'username': data['username']})
             if existing_user:
                 return jsonify({"result": "failure", "message": "Username already exists. Please choose a different one."})
             else:
-                today = datetime.now()
-                mytime = today.strftime('%d-%m-%Y-%H-%M-%S')
-
-                extension = profile_image.filename.split('.')[-1] 
-                profilename = f'profile-{mytime}.{extension}'
-                save_to = f'static/owner/{profilename}'
-                profile_image.save(save_to)
-
-                extension1 = bukti_pembayaran.filename.split('.')[-1]
-                bukti_filename = f'bukti-{mytime}.{extension1}'
-                bukti_save_to = f'static/bukti_pembayaran/{bukti_filename}'
-                bukti_pembayaran.save(bukti_save_to)
-                
-
                 hashed_password = hashlib.sha256(data['password'].encode()).hexdigest()
                 user_id = db.users.insert_one({
                     'namalengkap': data['namalengkap'],
@@ -201,7 +135,9 @@ def register():
                     'nohp': data['nohp'],
                     'email': data['email'],
                     'password': hashed_password,
-                    'alamat': data['alamat']
+                    'alamat': data['alamat'],
+                    'profile': profile_filename  ,
+                    'bukti': bukti_filename  
                 }).inserted_id
 
                 user = User()
@@ -213,46 +149,132 @@ def register():
             return jsonify({"result": "error", "message": str(e)})
     return render_template("register.html", form=form)
 
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = UserLoginForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        user_data = db.users.find_one({'username': username})
+        if user_data and user_data['password'] == hashlib.sha256(password.encode()).hexdigest():
+            user = User()
+            user.id = user_data['_id']
+            login_user(user)
+            return render_template("ownerDashboard.html")
+        else:
+            return jsonify({"result": "failure", "message": "Invalid username or password."})
+    return render_template("login.html", form=form)
+
+@app.route("/ownerDashboard")
+@login_required
+def ownerDashboard():
+    return render_template("ownerDashboard.html", user=current_user)
+# --------------------------- end auth owner ---------------------------
+
+
+# --------------------------- auth dokter ---------------------------
+class Doctor(UserMixin):
+    pass
+
+@login_manager.user_loader
+def load_doctor(doctor_id):
+    doctor_data = db.doctors.find_one({'_id': doctor_id})
+    if doctor_data:
+        doctor = Doctor()
+        doctor.id = doctor_data['_id']
+        return doctor
+    return None
+
+def save_photo(foto, folder='static/foto/dokter/'):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    if foto:
+        filename = secure_filename(foto.filename)
+        filepath = os.path.join(folder, filename)
+        foto.save(filepath)
+        return filename
+    return None
+
+class DoctorRegistrationForm(FlaskForm):
+    namalengkap = StringField('Nama Lengkap', validators=[InputRequired(), Length(min=4, max=50)])
+    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=25)])
+    nohp = StringField('No HP', validators=[InputRequired(), Length(min=10, max=15)])
+    email = StringField('Email', validators=[InputRequired(), Email(), Length(max=50)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
+    alamat = TextAreaField('Alamat', validators=[InputRequired(), Length(min=10, max=200)])
+    pendidikan = StringField('Pendidikan', validators=[InputRequired(), Length(min=4, max=50)])
+    harga = StringField('Harga', validators=[InputRequired(), Length(min=1, max=10)])
+    foto = FileField('Upload Foto', validators=[FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
+
+class DoctorLoginForm(FlaskForm):
+    username = StringField('Username', validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
+
 @app.route("/dokterRegister", methods=['GET', 'POST'])
 def dokterRegister():
-    form = DokterRegistrationForm()  
+    form = DoctorRegistrationForm()
     if request.method == 'POST' and form.validate_on_submit():
         try:
             data = form.data
-            profile_image = request.files['profile_image']
-            existing_user = db.dokter.find_one({'username': data['username']})
-            if existing_user:
+            foto = request.files['foto']
+            
+            foto_filename = save_photo(foto)
+            
+            existing_doctor = db.doctors.find_one({'username': data['username']})
+            if existing_doctor:
                 return jsonify({"result": "failure", "message": "Username already exists. Please choose a different one."})
             else:
-                today = datetime.now()
-                mytime = today.strftime('%d-%m-%Y-%H-%M-%S')
-                extension = profile_image.filename.split('.')[-1] 
-                profilename = f'profile-{mytime}.{extension}'
-                save_to = f'static/dokter/{profilename}'
-                profile_image.save(save_to)
-
-                hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256')
-                user_id = db.dokter.insert_one({
+                hashed_password = hashlib.sha256(data['password'].encode()).hexdigest()
+                doctor_id = db.doctors.insert_one({
                     'namalengkap': data['namalengkap'],
                     'username': data['username'],
                     'nohp': data['nohp'],
                     'email': data['email'],
                     'password': hashed_password,
                     'alamat': data['alamat'],
-                    'lokasiklinik': data['lokasiklinik'],
-                    'pendidikanterakhir': data['pendidikanterakhir'],
-                    'harga': data['harga']
-
+                    'pendidikan': data['pendidikan'],
+                    'harga': data['harga'],
+                    'foto': foto_filename  
                 }).inserted_id
 
-                dokter = User()
-                dokter.id = user_id
-                login_user(dokter)
+                doctor = Doctor()
+                doctor.id = doctor_id
+                login_user(doctor)
                 return redirect(url_for('dokterLogin'))
         except Exception as e:
             traceback.print_exc()
             return jsonify({"result": "error", "message": str(e)})
     return render_template("dokterRegister.html", form=form)
+
+@app.route("/dokterLogin", methods=['GET', 'POST'])
+def dokterLogin():
+    form = DoctorLoginForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        doctor_data = db.doctors.find_one({'username': username})
+        if doctor_data and doctor_data['password'] == hashlib.sha256(password.encode()).hexdigest():
+            doctor = Doctor()
+            doctor.id = doctor_data['_id']
+            login_user(doctor)
+            return render_template("dokterDashboard.html")
+        else:
+            return jsonify({"result": "failure", "message": "Invalid username or password."})
+    return render_template("dokterLogin.html", form=form)
+
+@app.route("/dokterDashboard")
+@login_required
+def dokterDashboard():
+    return render_template("dokterDashboard.html", user=current_user)
+
+@app.route("/dokterDaftar")
+def dokterDaftar():
+    doctors = db.doctors.find()
+    return render_template("dokterDaftar.html", doctors=doctors)
+# --------------------------- end auth dokter ---------------------------
 
 @app.route("/logout")
 @login_required
