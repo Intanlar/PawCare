@@ -8,38 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-  <script>
-    function toggleEditForm() {
-      // Tambahkan logika yang sesuai untuk tombol "Ubah" di sini
-      console.log("Tombol Ubah ditekan");
-    }
-
-    function saveChanges() {
-      // Tambahkan logika yang sesuai untuk tombol "Simpan" di sini
-      console.log("Tombol Simpan ditekan");
-
-      // Contoh: Mengambil nilai dari input dan dropdown rate
-      var ulasan = document.getElementById("exampleFormControlInput1").value;
-      var rate = document.getElementById("rateDropdown").innerText;
-
-      // Lakukan apa pun yang perlu Anda lakukan dengan data tersebut (misalnya, simpan ke server)
-      console.log("Ulasan: " + ulasan);
-      console.log("Rate: " + rate);
-    }
-
-    // Fungsi untuk menangani pemilihan dropdown rate
-    function selectRate(value) {
-      document.getElementById("rateDropdown").innerText = value;
-    }
-
-    function deleteReview() {
-      // Tambahkan logika yang sesuai untuk tombol "Hapus" di sini
-      console.log("Tombol Hapus ditekan");
-
-      // Lakukan apa pun yang perlu Anda lakukan untuk menghapus ulasan (misalnya, kirim permintaan ke server)
-    }
-  </script>
-
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
@@ -86,7 +54,7 @@
 
     .form-box {
       width: 200%;
-      max-width: 400px;
+      max-width: 600px;
     }
 
     .profile-box {
@@ -94,7 +62,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      /* Center the profile image horizontally */
     }
 
     .profile-image {
@@ -116,90 +83,86 @@
 </head>
 
 <body>
+
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <a class="navbar-brand" href="/">
-        <img src="static/img/logotrans.png" width="80px">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+      <a class="navbar-brand" href="#">
+        <img src="{{ url_for('static', filename='logo.png') }}" height="50" class="mr-2">
+        <span class="font-weight-bold">PawCare</span>
+      </a>
 
-            <div class="d-flex" role="search">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Konsultasi
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
-                            <a class="dropdown-item" href="#">Daftar Dokter</a>
-                            <li><a class="dropdown-item" href="/riwayat_konsultasi">Riwayat Konsultasi</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link"  href="/daftar_rekam_medis">Rekam Medis</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile">Profil</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                        Login
-                        </button>
-                    </li>
-                </ul>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Konsultasi
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
+              <a class="dropdown-item" href="#">Daftar Dokter</a>
+              <a class="dropdown-item" href="#">Riwayat Konsultasi</a>
             </div>
-        </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Rekam Medis</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Ulasan</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Profil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Login</a>
+          </li>
+        </ul>
+      </div>
     </div>
-</nav>
+  </nav>
 
   <div class="container mt-5">
     <div class="record-box">
       <h2>Form ulasan</h2>
 
-      <div class="row">
-        <div class="col-md-7">
-          <!-- Profile Image 1 with Dropdown -->
-          <div class="profile-box">
-            <img src="path/to/your/profile-image-1.jpg" class="img-thumbnail profile-image mr-2" alt="Profile Image 1">
+      <form method="POST" action="{{ url_for('submit_form') }}">
+        <div class="row">
+          <div class="col-md-7">
+            <!-- Profile Image 1 with Dropdown -->
+            <div class="profile-box">
+              <img src="{{ url_for('static', filename='path/to/your/profile-image-1.jpg') }}"
+                class="img-thumbnail profile-image mr-2" alt="Profile Image 1">
 
-            <div class="dropdown ml-auto">
-              <button class="btn btn-secondary dropdown-toggle ml-auto" type="button" id="dropdownMenuButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Rate
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">⭐</a>
-                <a class="dropdown-item" href="#">⭐⭐</a>
-                <a class="dropdown-item" href="#">⭐⭐⭐</a>
-                <a class="dropdown-item" href="#">⭐⭐⭐⭐</a>
-                <a class="dropdown-item" href="#">⭐⭐⭐⭐⭐</a>
+              <div class="btn-group">
+                <select class="form-control" id="rating" name="rating">
+                  <option value="" disabled selected>Select Rating</option>
+                  <option value="5">⭐⭐⭐⭐⭐</option>
+                  <option value="4">⭐⭐⭐⭐</option>
+                  <option value="3">⭐⭐⭐</option>
+                  <option value="2">⭐⭐</option>
+                  <option value="1">⭐</option>
+                </select>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="col-md-10">
           <!-- Form box -->
           <div class="form-box mx-auto">
-            <input type="text" class="input form-control" id="exampleFormControlInput1" placeholder="Beri Ulasan">
+            <textarea class="form-control" id="exampleFormControlInput1" name="ulasan"
+              placeholder="Beri Ulasan"></textarea>
           </div>
-
           <div class="d-flex justify-content-end mt-3">
-            <button class="btn btn-secondary" style="background-color: #a3a5a5"
-              onclick="toggleEditForm()">Simpan</button>
-            <button class="btn btn-secondary ml-2" style="background-color: #a3a5a5"
-              onclick="saveChanges()">Hapus</button>
+            <button type="submit" class="btn btn-secondary" style="background-color: #a3a5a5">Simpan</button>
+            <button type="button" class="btn btn-secondary ml-2" style="background-color: #a3a5a5"
+              onclick="deleteReview()">Hapus</button>
           </div>
-        </div>
-      </div>
+      </form>
     </div>
+  </div>
   </div>
 
   <footer class="footer mt-auto py-3 bg-light">
@@ -210,13 +173,42 @@
       </span>
     </div>
   </footer>
-  <!-- ... -->
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <!-- ... -->
+  <script>
+    // Fungsi untuk menangani pemilihan dropdown rate
+    function selectRate(value) {
+      document.getElementById("rateDropdown").innerText = value + " Bintang";
+    }
+
+    // Fungsi untuk menghapus ulasan
+    function deleteReview() {
+      // Konfirmasi sebelum melakukan aksi hapus
+      if (confirm("Apakah Anda yakin ingin menghapus ulasan?")) {
+        // Lakukan apa pun yang perlu Anda lakukan untuk menghapus ulasan (misalnya, kirim permintaan ke server)
+        alert("Ulasan berhasil dihapus!");
+      }
+    }
+
+    function saveAndRedirect(event) {
+      // Prevent form submission
+      event.preventDefault();
+      // Gather form data
+      var ulasan = document.getElementById("exampleFormControlInput1").value;
+      var rate = document.getElementById("rating").value;
+
+      // Perform any necessary actions (e.g., save data to the server)
+
+      // Display confirmation
+      alert("Ulasan berhasil disimpan!");
+
+      // Redirect to the reviews page
+      window.location.href = "/halaman_ulasan";
+    }
+  </script>
 
 </body>
 

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pawcare</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary nav-color">
+        <div class="container">
+            <a class="navbar-brand" href="/ownerDasboard">
+            <img src="static/img/logotrans.png" width="80px">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+                <div class="d-flex" role="search">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Konsultasi
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/daftar_dokter">Daftar Dokter</a></li>
+                                <li><a class="dropdown-item" href="/riwayat">Riwayat Konsultasi</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"  href="/daftar_rekamMedis">Rekam Medis</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profile">Profil</a>
+                        </li>
+                    </ul>
+                    <a class="btn btn-outline" href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="banner">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1 class="hBanner">Paw Care</h1>
+                    <p class="textBanner">Klinik Hewan adalah tempat usaha Pelayanan Jasa Medik Veteriner yang memiliki
+                        Dokter
+                        Hewan praktik dan fasilitas untuk penanganan hewan. Ambulatori adalah pelayanan
+                        Kesehatan Hewan yang bersifat bergerak berupa Klinik Hewan keliling atau house call.</p>
+                </div>
+                <div class="col">
+                    <img src="static/img/cat.png" style="padding-left: 100px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="layanan" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Layanan Kami</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4 text-center">
+                        <img src="{{ url_for('static', filename='img/landingForm.png') }}" class="img-fluid" alt="..."  style="height: 350px; width: 90%;" >
+                        <div class="card-body">
+                            <h2 class="card-title">Konsultasi Online</h2>
+                            <p class="card-text" style="font-size: 20px;">Menyediakan konsultasi online dengan baik.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 text-center">
+                        <img src="{{ url_for('static', filename='img/landingRiwayat.png') }}"class="img-fluid" alt="..."  style="height: 350px; width: 90%;" >
+                        <div class="card-body">
+                            <h2 class="card-title">Rekam Medis</h2>
+                            <p class="card-text" style="font-size: 20px;">Menyediakan hasil rekam medis yang tepat dan cepat</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 text-center">
+                        <img src="{{ url_for('static', filename='img/landingDokter.png') }}"class="img-fluid" alt="..."  style="height: 350px; width: 90%;" >
+                        <div class="card-body">
+                            <h2 class="card-title">Dokter Hewan Terpercaya</h2>
+                            <p class="card-text" style="font-size: 20px;">Dokter dengan lulusan terbaik dan berpengalaman.</p>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="konsul" class="mb-5">
+        <h1 class="text-center">Langkah-langkah Konsultasi Online</h1>
+        <ol>
+            <li>
+                <div class="icon"><i class="fa-solid fa-bicycle"></i></div>
+                <div class="title">Step 1</div>
+                <div class="descr">Lakukan pendaftaran akun atau masuk jika sudah memiliki akun.</div>
+            </li>
+            <li>
+                <div class="icon"><i class="fa-solid fa-car"></i></div>
+                <div class="title">Step 2</div>
+                <div class="descr">Telusuri daftar dokter hewan yang sudah tersedia untuk kunsultasi online</div>
+            </li>
+            <li>
+                <div class="icon"><i class="fa-solid fa-helicopter"></i></div>
+                <div class="title">Step 3</div>
+                <div class="descr">Klik tombol tambah konsultasi dan lakukan pengisian data.</div>
+            </li>
+            <li>
+                <div class="icon"><i class="fa-solid fa-plane"></i></div>
+                <div class="title">Step 4</div>
+                <div class="descr">Lakukan pembayaran untuk layanan kunsultasi yang anda pilih.</div>
+            </li>
+            <li>
+                <div class="icon"><i class="fa-solid fa-rocket"></i></div>
+                <div class="title">Step 5</div>
+                <div class="descr">Tunggu hingga hasilm diagnosa dari dokter pada menu rekam Medis.</div>
+            </li>
+        </ol>
+    </section>
+
+    <footer>
+        <h2>pawcare.glitch.com</h2>
+        <p class="text-footer">© 2023 Oleh Tim Oracle Learningx:</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

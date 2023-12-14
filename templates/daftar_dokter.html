@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pawcare</title>
+
+  <!-- Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+  <!-- Font Awesome CSS -->
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+  <!-- JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+  <link rel="stylesheet" href="static/css/main.css">
+
+
+  <style>
+    * {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .form-box {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+      margin-top: 50px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    button[type="submit"] {
+      background-color: #00ADB5;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #00858a;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background-color: #222831;
+      color: white;
+      text-align: center;
+    }
+  </style>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary nav-color">
+    <div class="container">
+      <a href="/">
+        <img src="static/img/logotrans.png" width="80px">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="d-flex" role="search">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Konsultasi
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/dokterDaftar">Daftar Dokter</a></li>
+                    <li><a class="dropdown-item" href="/riwayat">Riwayat Konsultasi</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"  href="/rekamMedis">Rekam Medis</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">Profil</a>
+            </li>
+            <li class="nav-item dropdown">
+                <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Login
+                </button>
+            </li>
+        </ul>
+    </div>
+    </div>
+    </div>
+  </nav>
+
+  <section id="banner">
+    <div class="data-docter">
+      <div class="text-center m-5">
+        <h1>Daftar Dokter</h1>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+          <thead>
+          </thead>
+          <tbody>
+            {% for doctor in doctors %}
+            <tr>
+              <td style="width: 200px;">
+                {% if doctor.foto %}
+                <img src="{{ url_for('static', filename='foto/dokter/' + doctor.foto) }}" alt="Doctor Photo">
+                {% else %}
+                <p>No photo available</p>
+                {% endif %}
+              </td>
+              <td>
+                <h1>{{ doctor.namalengkap }}</h1>
+                <div class="d-flex">
+                  <p>{{ doctor.harga }}</p>
+                </div>
+                <button type="button" class="btn btn-secondary .tombol"
+                  data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="">
+                  Details
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Data Docter</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex justify-content-center">
+              <div class="img m-5">
+                <img
+                  src="https://img.freepik.com/premium-vector/doctor-icon-flat-vector-illustration_757387-939.jpg?w=740"
+                  class="img-thumbnail" alt="..." style="width: 300px;">
+              </div>
+              <div class="details m-5">
+              {% for doctor in doctors %}
+                <h1>{{ doctor.namalengkap }}</h1>
+                <p>lokasi Klinik : Jalan<br>
+                  Nomor HP : {{ doctor.nohp }}<br>
+                  Email : {{ doctor.email }}<br>
+                  Pendidikan Terakhir : {{ doctor.pendidikan }} <br></p>
+                <button>Ulasan</button>
+                <button>Tambah Konsultasi</button>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+      <span class="text-muted">
+        <strong style="font-size: 24px;">Pawcare</strong><br>
+        &copy; 2023 oleh Tim Oracle Learning X
+      </span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
