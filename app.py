@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from flask_login import logout_user
 import jwt
-from pymongo import MongoClient
+from pymongo import MongoClient, errors
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from datetime import datetime
@@ -78,7 +78,7 @@ def load_user(user_id):
         return user
     return None
 
-def save_photo(profile_image, folder='static/foto/owner/profile/'):
+def save_profilePhoto(profile_image, folder='static/foto/owner/profile/'):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
@@ -89,7 +89,7 @@ def save_photo(profile_image, folder='static/foto/owner/profile/'):
         return filename
     return None
 
-def save_photo(bukti_pembayaran, folder='static/foto/owner/bukti_pembayaran/'):
+def save_buktiPhoto(bukti_pembayaran, folder='static/foto/owner/bukti_pembayaran/'):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
@@ -122,8 +122,8 @@ def register():
             profile_image = request.files['profile_image']
             bukti_pembayaran = request.files['bukti_pembayaran']
             
-            profile_filename = save_photo(profile_image)
-            bukti_filename = save_photo(bukti_pembayaran)
+            profile_filename = save_profilePhoto(profile_image)
+            bukti_filename = save_buktiPhoto(bukti_pembayaran)
             existing_user = db.users.find_one({'username': data['username']})
             if existing_user:
                 return jsonify({"result": "failure", "message": "Username already exists. Please choose a different one."})
@@ -285,18 +285,41 @@ def logout():
 #########################################################################################################################################################
 # konsultasi
 
+doctors = []
+
 @app.route("/daftar_dokter")
 def daftar_dokter():
     doctors = db.doctors.find()
     return render_template("daftar_dokter.html", doctors=doctors)
 
-@app.route('/detail_konsultasi')
-def detail():
-    return render_template('detail_konsultasi.html')
 
-@app.route('/form_konsultasi')
-def form_konsultasi():
-    return render_template('form_konsultasi.html')
+@app.route('/detail_dokter/<string:doctor_id>')
+def detail_dokter(doctor_id):
+    selected_doctor = db.doctors.find_one({'_id': ObjectId(doctor_id)})
+    if selected_doctor:
+        return render_template('detail_dokter.html', doctor=selected_doctor)
+    else:
+        return "Dokter tidak ditemukan."
+
+@app.context_processor
+def utility_processor():
+    def get_doctor_name(doctor_id):
+        doctor = db.doctors.find_one({'_id': ObjectId(doctor_id)})
+        if doctor:
+            return doctor['namalengkap']
+        return 'Dokter Tidak Ditemukan'
+    
+    return dict(get_doctor_name=get_doctor_name)
+
+
+
+
+
+@app.route('/form_konsultasi/<string:doctor_id>', methods=['GET'])
+def form_konsultasi(doctor_id):
+    doctor = db.doctors.find_one({'_id': ObjectId(doctor_id)})
+    return render_template('form_konsultasi.html', doctor=doctor, doctor_id=doctor_id)
+
 
 @app.route('/save_form_konsultasi', methods=['POST'])
 def save_form_data():
@@ -306,9 +329,12 @@ def save_form_data():
         jenis_kucing = request.form['jenisKucing']
         usia_kucing = request.form['usiaKucing']
         keluhan = request.form['keluhan']
-        
         foto_keluhan = request.files['fotoKeluhan']
         bukti_pembayaran = request.files['buktiPembayaran']
+        doctor_id = request.form['doctor_id'] 
+        
+        filename_keluhan = None
+        filename_pembayaran = None
         
         if foto_keluhan and allowed_file(foto_keluhan.filename):
             filename_keluhan = secure_filename(foto_keluhan.filename)
@@ -325,7 +351,8 @@ def save_form_data():
             'usia_kucing': usia_kucing,
             'keluhan': keluhan,
             'foto_keluhan': filename_keluhan,  
-            'bukti_pembayaran': filename_pembayaran  
+            'bukti_pembayaran': filename_pembayaran,
+           'doctor_id': ObjectId(doctor_id)
         })
 
         return redirect('/riwayat')
@@ -335,20 +362,25 @@ def riwayat_konsultasi():
     riwayat_konsultasi = list(col_konsultasi.find({}))
     return render_template('riwayat_konsultasi.html', riwayat_konsultasi=riwayat_konsultasi)
 
-# Rekam Medis
+#######################################################################################################################
+# rekam medis
+
 @app.route('/daftar_rekamMedis')
 def daftar_rekamMedis():
-    return render_template('daftar_rekamMedis.html')
+    doctors = db.doctors.find()
+    return render_template('daftar_rekamMedis.html', doctors=doctors)
+
+
+@app.route('/detail_rekamMedis/<string:doctor_id>')
+def detail_rekamMedis(doctor_id):
+    selected_doctor = db.doctors.find_one({'_id': ObjectId(doctor_id)})
+    if selected_doctor:
+        rekam_medis = col_konsultasi.find({'doctor_id': ObjectId(doctor_id)})
+        return render_template('detail_rekamMedis.html', doctor=selected_doctor, detail_rekamMedis=rekam_medis)
+    else:
+        return "Dokter tidak ditemukan."
+
     
-@app.route('/detail_rekamMedis')
-def detail_rekamMedis():
-    return render_template('detail_rekamMedis.html')
-
-@app.route('/detail_rekam_medis/<doctor_id>')
-def detail_rekam_medis(doctor_id):
-    diagnosa = col_konsultasi.find_one({'_id': ObjectId(doctor_id)})
-    return render_template('detail_rekamMedis.html', diagnosa=diagnosa)
-
 # rekam medis view dokter
 @app.route('/dokterDaftar_rmd')
 def dokterDaftar_rmd():

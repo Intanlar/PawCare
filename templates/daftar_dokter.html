@@ -28,43 +28,72 @@
       font-family: 'Montserrat', sans-serif;
     }
 
-    .form-box {
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-      margin-top: 50px;
-      margin-bottom: 30px;
+    .navbar-brand img {
+      border-radius: 50%;
     }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
+    .navbar-brand,
+    .navbar-brand .navbar-text {
       font-weight: bold;
     }
 
-    button[type="submit"] {
-      background-color: #00ADB5;
-      color: #ffffff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
+    .navbar-nav .nav-link {
+      font-weight: bold;
     }
 
-    button[type="submit"]:hover {
-      background-color: #00858a;
+    h2 {
+      font-weight: bold;
+    }
+
+    .doctor-info {
+      display: flex;
+      border-radius: 5px;
+      background-color: white;
+    }
+
+    .doctor-info img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .doctor-info .info {
+      flex: 1;
+    }
+
+    .doctor-info h4 {
+      margin-top: 25px;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    .btn-lihat {
+      background-color: #4d4a7a;
+      color: #ffffff;
+      float: right;
     }
 
     .footer {
       position: absolute;
       bottom: 0;
       width: 100%;
-      background-color: #222831;
+      background-color: #ffffff;
       color: white;
       text-align: center;
+      padding: 20px 0;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      position: relative;
+      margin: 0;
+      padding-bottom: 100px;
+      background-image: url('/static/img/paw.jpg');
+      background-color: rgba(255, 255, 255, 0.5);
+      background-blend-mode: lighten;
+      background-size: cover;
+      min-height: 100vh;
     }
   </style>
 
@@ -73,7 +102,7 @@
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary nav-color">
     <div class="container">
-      <a href="/">
+      <a href="/ownerDasboard">
         <img src="static/img/logotrans.png" width="80px">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -83,103 +112,50 @@
 
       <div class="d-flex" role="search">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Konsultasi
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/dokterDaftar">Daftar Dokter</a></li>
-                    <li><a class="dropdown-item" href="/riwayat">Riwayat Konsultasi</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link"  href="/rekamMedis">Rekam Medis</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/profile">Profil</a>
-            </li>
-            <li class="nav-item dropdown">
-                <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                Login
-                </button>
-            </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Konsultasi
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/daftar_dokter">Daftar Dokter</a></li>
+              <li><a class="dropdown-item" href="/riwayat">Riwayat Konsultasi</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/rekamMedis">Rekam Medis</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/profile">Profil</a>
+          </li>
+          <li class="nav-item dropdown">
+            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+              Login
+            </button>
+          </li>
         </ul>
-    </div>
+      </div>
     </div>
     </div>
   </nav>
 
-  <section id="banner">
-    <div class="data-docter">
-      <div class="text-center m-5">
-        <h1>Daftar Dokter</h1>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-bordered table-sm">
-          <thead>
-          </thead>
-          <tbody>
-            {% for doctor in doctors %}
-            <tr>
-              <td style="width: 200px;">
-                {% if doctor.foto %}
-                <img src="{{ url_for('static', filename='foto/dokter/' + doctor.foto) }}" alt="Doctor Photo">
-                {% else %}
-                <p>No photo available</p>
-                {% endif %}
-              </td>
-              <td>
-                <h1>{{ doctor.namalengkap }}</h1>
-                <div class="d-flex">
-                  <p>{{ doctor.harga }}</p>
-                </div>
-                <button type="button" class="btn btn-secondary .tombol"
-                  data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="">
-                  Details
-                </button>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-      aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Data Docter</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="d-flex justify-content-center">
-              <div class="img m-5">
-                <img
-                  src="https://img.freepik.com/premium-vector/doctor-icon-flat-vector-illustration_757387-939.jpg?w=740"
-                  class="img-thumbnail" alt="..." style="width: 300px;">
-              </div>
-              <div class="details m-5">
-              {% for doctor in doctors %}
-                <h1>{{ doctor.namalengkap }}</h1>
-                <p>lokasi Klinik : Jalan<br>
-                  Nomor HP : {{ doctor.nohp }}<br>
-                  Email : {{ doctor.email }}<br>
-                  Pendidikan Terakhir : {{ doctor.pendidikan }} <br></p>
-                <button>Ulasan</button>
-                <button>Tambah Konsultasi</button>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
+  <section id="banner" class="py-5">
+    <div class="container">
+      <h2 class="mb-4">Daftar Dokter</h2>
+      {% for doctor in doctors %}
+      <div class="doctor-info shadow p-4 mb-3 bg-white rounded">
+        <!-- Informasi Dokter yang Ditampilkan -->
+        <img src="{{ url_for('static', filename='foto/dokter/' + doctor.foto) }}" alt="Doctor Photo">
+        <div class="info">
+          <h4>{{ doctor.namalengkap }}</h4>
+          <p>{{ doctor.harga }}</p>
+          <!-- Tombol Detail untuk Setiap Dokter -->
+          <a href="/detail_dokter/{{ (doctor._id) }}" class="btn btn-lihat" style="background-color: #00ADB5;">Details</a>
         </div>
       </div>
+{% endfor %}
     </div>
 
   </section>

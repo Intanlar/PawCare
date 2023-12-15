@@ -151,7 +151,7 @@
                             Tidak ada foto
                         {% endif %}
                     </td>
-                    <td>{{ data['dokter'] }}</td>
+                    <td>{{ get_doctor_name(data.get('doctor_id')) }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

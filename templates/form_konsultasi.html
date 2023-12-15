@@ -67,19 +67,19 @@
             font-family: 'Montserrat', sans-serif;
             position: relative;
             margin: 0;
-            padding-bottom: 100px; 
-            background-image: url('../static/paw.jpg');
-            background-color: rgba(255, 255, 255, 0.5); 
-            background-blend-mode: lighten; 
-            background-size: cover; 
-            min-height: 100vh; 
+            padding-bottom: 100px;
+            background-image: url('/static/img/paw.jpg');
+            background-color: rgba(255, 255, 255, 0.5);
+            background-blend-mode: lighten;
+            background-size: cover;
+            min-height: 100vh;
         }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('saveBtn').addEventListener('click', function () {
-                saveFormData(); 
+                saveFormData();
             });
         });
 
@@ -93,7 +93,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data); 
+                    console.log(data);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -117,13 +117,21 @@
             fotoKeluhan.value = '';
             buktiPembayaran.value = '';
         }
+        // Mendapatkan doctor_id dari URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const doctorId = urlParams.get('doctor_id');
+
+        // Mengatur nilai input tersembunyi dalam formulir
+        const inputDoctorId = document.querySelector('input[name="doctor_id"]');
+        inputDoctorId.value = doctorId;
+
     </script>
 
 <body style="position: relative;">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="/">
-            <img src="static/img/logotrans.png" width="80px">
+                <img src="static/img/logotrans.png" width="80px">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -131,43 +139,46 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-                <div class="d-flex" role="search">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Konsultasi
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
-                                <a class="dropdown-item" href="#">Daftar Dokter</a>
-                                <li><a class="dropdown-item" href="/riwayat_konsultasi">Riwayat Konsultasi</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link"  href="/daftar_rekam_medis">Rekam Medis</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/profile">Profil</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <div class="d-flex" role="search">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Konsultasi
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
+                            <a class="dropdown-item" href="#">Daftar Dokter</a>
+                            <li><a class="dropdown-item" href="/riwayat_konsultasi">Riwayat Konsultasi</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/daftar_rekam_medis">Rekam Medis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Profil</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <button type="button" class="btn btn-outline" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop">
                             Login
-                            </button>
-                        </li>
-                    </ul>
-                </div>
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
+        </div>
     </nav>
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="form-box">
                     <h2 class="mb-4 text-center">Form Konsultasi</h2>
-                    <form id="konsultasiForm" method="POST" action="/save_form_data" enctype="multipart/form-data">
+                    <form action="/save_form_konsultasi" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="doctor_id" value="{{ doctor_id }}">
                         <div class="form-group">
                             <label for="namaPemilik">Nama Pemilik</label>
                             <input type="text" class="form-control" id="namaPemilik" name="namaPemilik"
@@ -203,8 +214,7 @@
                         </div>
                         <div class="row mt-4 mb-3">
                             <div class="col text-right">
-                                <button type="submit" class="btn btn-primary" id="saveBtn"
-                                    style="background-color: #00ADB5">Save</button>
+                                <button type="submit" class="btn btn-primary" id="saveBtn" style="background-color: #00ADB5">Save</button>
                                 <button type="button" class="btn btn-secondary" style="background-color: #393E46;"
                                     onclick="clearForm()">Clear</button>
                             </div>

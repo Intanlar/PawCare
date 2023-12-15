@@ -84,13 +84,19 @@
         th {
             background-color: #f2f2f2;
         }
+
+        .profile-img {
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+        
     </style>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <img src="static/img/logotrans.png" width="80px">
+                <img src="{{ url_for('static', filename='img/logotrans.png') }}" width="80px"></a>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -135,19 +141,28 @@
     <div class="container mt-5">
         <div class="record-box">
             <h2>Detail Rekam Medis</h2>
-
-            <div class="header">
-                <div class="info">
-                    <p>Nama: Nama Dokter</p>
-                    <p>Lokasi Klinik: Lokasi Klinik</p>
-                    <p>Nomor HP: Nomor HP</p>
+            <div class="row">
+                <div class="col-md-3">
+                    <!-- Letakkan foto profil di dalam kolom -->
+                    <img src="{{ url_for('static', filename='foto/dokter/' + doctor.foto) }}" alt="Foto Dokter"
+                        class="profile-img">
                 </div>
-                <div class="review-button">
-                    <button class="btn btn-primary" style="background-color: #4d4a7a">Beri Penilaian</button>
+                <div class="col-md-9">
+                    <!-- Letakkan informasi di dalam kolom yang lebih besar -->
+                    <div class="header">
+                        <div class="info mt-2">
+                            <p><strong>Nama:</strong> {{ doctor.namalengkap }}</p>
+                            <p><strong>Lokasi Klinik:</strong> {{ doctor.alamat }}</p>
+                            <p><strong>No HP:</strong> {{ doctor.nohp }}</p>
+                        </div>
+                        <div class="review-button">
+                            <button class="btn btn-primary mt-5" style="background-color: #4d4a7a">Beri Penilaian</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="record-box">
-                <h2>Detail Rekam Medis</h2>
+                <h4>Detail Rekam Medis</h4>
                 <table class="table">
                     <thead>
                         <tr>
@@ -160,23 +175,29 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for data in detail_rekamMedis %}
                         <tr>
-                            <td>{{ diagnosa['nama_kucing'] }}</td>
-                            <td>{{ diagnosa['jenis_kucing'] }}</td>
-                            <td>{{ diagnosa['usia_kucing'] }}</td>
-                            <td>{{ diagnosa['keluhan'] }}</td>
+                            <td>{{ data['nama_kucing'] }}</td>
+                            <td>{{ data['jenis_kucing'] }}</td>
+                            <td>{{ data['usia_kucing'] }}</td>
+                            <td>{{ data['keluhan'] }}</td>
                             <td>
-                                {% if diagnosa['foto_keluhan'] %}
-                                    <img src="{{ url_for('static', filename='uploads/' + diagnosa['foto_keluhan']) }}" alt="Foto Keluhan" height="50">
+                                {% if data['foto_keluhan'] %}
+                                <img src="{{ url_for('static', filename='uploads/' + data['foto_keluhan']) }}"
+                                    alt="Foto Keluhan" height="50">
                                 {% else %}
-                                    Tidak ada foto
+                                Tidak ada foto
                                 {% endif %}
                             </td>
-                            <td>{{ diagnosa['diagnosa'] }}</td>
+                            <td>{{ get_doctor_name(data.get('doctor_id')) }}</td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
-            </div>            
+            </div>
+            
+            
+            
         </div>
     </div>
 
