@@ -3,7 +3,6 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from flask import session
-from flask_login import logout_user
 from flask_login import UserMixin
 import jwt
 from pymongo import MongoClient, errors
