@@ -2,12 +2,14 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import session
 from flask_login import logout_user
+from flask_login import UserMixin
 import jwt
 from pymongo import MongoClient, errors
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
-from datetime import datetime
+from datetime import datetime, timedelta
 from wtforms import StringField, PasswordField, TextAreaField
 from wtforms.validators import InputRequired, Email, Length
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -17,12 +19,14 @@ import traceback
 import hashlib
 from werkzeug.utils import secure_filename
 from bson import ObjectId
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 SECRET_KEY = 'SPARTA'
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = '2f6721334df9da42e670654a7de0dffe8b70f80f5617511f' 
+jwt = JWTManager(app)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -46,7 +50,6 @@ db = client[DB_NAME]
 col_konsultasi = db.riwayat_konsultasi
 
 
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -62,19 +65,20 @@ def get_next_filename(folder_path, prefix):
 def home():
     return render_template("index.html")
 
-###############################################################################################
+#######################################################################################################################
 # Regis & login
 
 # --------------------------- auth owner ---------------------------
+# Authentication for owner
 class User(UserMixin):
-    pass
+    def __init__(self, user_id):
+        self.id = user_id
 
 @login_manager.user_loader
 def load_user(user_id):
     user_data = db.users.find_one({'_id': user_id})
     if user_data:
-        user = User()
-        user.id = user_data['_id']
+        user = User(user_data['_id'])  # Pass the user_id when creating the User object
         return user
     return None
 
@@ -158,7 +162,7 @@ def login():
 
         user_data = db.users.find_one({'username': username})
         if user_data and user_data['password'] == hashlib.sha256(password.encode()).hexdigest():
-            user = User()
+            user = User(user_data['_id'])
             user.id = user_data['_id']
             login_user(user)
             return render_template("ownerDashboard.html")
@@ -167,22 +171,25 @@ def login():
     return render_template("login.html", form=form)
 
 @app.route("/ownerDashboard")
-@login_required
 def ownerDashboard():
-    return render_template("ownerDashboard.html", user=current_user)
+    if current_user.is_authenticated:
+        return render_template("ownerDashboard.html", user=current_user)
+    else:
+        return redirect(url_for('login'))
+
 # --------------------------- end auth owner ---------------------------
 
 
 # --------------------------- auth dokter ---------------------------
 class Doctor(UserMixin):
-    pass
+    def __init__(self, doctor_id):
+        self.id = doctor_id
 
 @login_manager.user_loader
 def load_doctor(doctor_id):
-    doctor_data = db.doctors.find_one({'_id': doctor_id})
+    doctor_data = db.doctors.find_one({'_id': ObjectId(doctor_id)})
     if doctor_data:
-        doctor = Doctor()
-        doctor.id = doctor_data['_id']
+        doctor = Doctor(str(doctor_data['_id']))  # Ensure the ID matches your requirements
         return doctor
     return None
 
@@ -257,7 +264,7 @@ def dokterLogin():
 
         doctor_data = db.doctors.find_one({'username': username})
         if doctor_data and doctor_data['password'] == hashlib.sha256(password.encode()).hexdigest():
-            doctor = Doctor()
+            doctor = Doctor(doctor_data['_id'])
             doctor.id = doctor_data['_id']
             login_user(doctor)
             return render_template("dokterDashboard.html")
@@ -266,7 +273,6 @@ def dokterLogin():
     return render_template("dokterLogin.html", form=form)
 
 @app.route("/dokterDashboard")
-@login_required
 def dokterDashboard():
     return render_template("dokterDashboard.html", user=current_user)
 
@@ -281,8 +287,7 @@ def dokterDaftar():
 def logout():
     logout_user()
     return redirect(url_for('home'))
-
-#########################################################################################################################################################
+#######################################################################################################################
 # konsultasi
 
 doctors = []
@@ -297,7 +302,8 @@ def daftar_dokter():
 def detail_dokter(doctor_id):
     selected_doctor = db.doctors.find_one({'_id': ObjectId(doctor_id)})
     if selected_doctor:
-        return render_template('detail_dokter.html', doctor=selected_doctor)
+        ulasan_entries = db.ulasan.find({'doctor_id': ObjectId(doctor_id)}).sort("_id", -1).limit(5)
+        return render_template('detail_dokter.html', doctor=selected_doctor, ulasan_entries=ulasan_entries)
     else:
         return "Dokter tidak ditemukan."
 
@@ -311,6 +317,17 @@ def utility_processor():
     
     return dict(get_doctor_name=get_doctor_name)
 
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = id
+
+@login_manager.user_loader
+def load_user(user_id):
+    user_data = db.users.find_one({'_id': user_id})
+    if user_data:
+        user = User(user_data['_id']) 
+        return user
+    return None
 
 
 
@@ -324,14 +341,14 @@ def form_konsultasi(doctor_id):
 @app.route('/save_form_konsultasi', methods=['POST'])
 def save_form_data():
     if request.method == 'POST':
-        nama_pemilik = request.form['namaPemilik']
         nama_kucing = request.form['namaKucing']
         jenis_kucing = request.form['jenisKucing']
         usia_kucing = request.form['usiaKucing']
         keluhan = request.form['keluhan']
         foto_keluhan = request.files['fotoKeluhan']
         bukti_pembayaran = request.files['buktiPembayaran']
-        doctor_id = request.form['doctor_id'] 
+        doctor_id = request.form['doctor_id']
+        user_id = current_user.id if current_user.is_authenticated else None
         
         filename_keluhan = None
         filename_pembayaran = None
@@ -345,14 +362,14 @@ def save_form_data():
             bukti_pembayaran.save(os.path.join(app.config['UPLOAD_FOLDER'], filename_pembayaran))
 
         result = col_konsultasi.insert_one({
-            'nama_pemilik': nama_pemilik,
             'nama_kucing': nama_kucing,
             'jenis_kucing': jenis_kucing,
             'usia_kucing': usia_kucing,
             'keluhan': keluhan,
             'foto_keluhan': filename_keluhan,  
             'bukti_pembayaran': filename_pembayaran,
-           'doctor_id': ObjectId(doctor_id)
+            'doctor_id': ObjectId(doctor_id),
+            'user_id': ObjectId(user_id)
         })
 
         return redirect('/riwayat')
@@ -380,108 +397,272 @@ def detail_rekamMedis(doctor_id):
     else:
         return "Dokter tidak ditemukan."
 
-    
+
+#######################################################################################################################
 # rekam medis view dokter
 @app.route('/dokterDaftar_rmd')
-def dokterDaftar_rmd():
-    return render_template('dokterDaftar_rmd.html')
+def dokter_daftar_rmd():
+    users = db.users.find({}, {'namalengkap': 1}) 
+    consultation_data = col_konsultasi.find({}, {'nama_kucing': 1, 'jenis_kucing': 1, 'usia_kucing': 1, 'keluhan': 1, 'foto_keluhan': 1, 'bukti_pembayaran': 1, 'diagnosa': 1})
 
-@app.route('/dokterDetail_rmd') 
-def dokterDetail_rmd():
-    return render_template('dokterDetail_rmd.html')
+    return render_template('dokterDaftar_rmd.html', users=users, consultation_data=consultation_data)
+
+@app.route('/tambah_diagnosa', methods=['POST'])
+def tambah_diagnosa():
+    if request.method == 'POST':
+        konsultasi_id = request.form['konsultasi_id']
+        diagnosa = request.form['diagnosa']
+
+        result = col_konsultasi.update_one(
+            {'_id': ObjectId(konsultasi_id)},
+            {'$set': {'diagnosa': diagnosa}}
+        )
+
+
+        return jsonify({'message': 'Diagnosa berhasil ditambahkan'})
+
+@app.route('/update_diagnosa', methods=['POST'])
+def update_diagnosa():
+    if request.method == 'POST':
+        konsultasi_id = request.json['konsultasi_id']
+        edited_diagnosa = request.json['edited_diagnosa']
+
+        result = col_konsultasi.update_one(
+            {'_id': ObjectId(konsultasi_id)},
+            {'$set': {'diagnosa': edited_diagnosa}}
+        )
+
+        if result.modified_count > 0:
+            col_konsultasi.update_one(
+                {'konsultasi_id': ObjectId(konsultasi_id)},
+                {'$set': {'diagnosa': edited_diagnosa}}
+            )
+
+            return jsonify({'message': 'Diagnosa berhasil diperbarui'})
+        else:
+            return jsonify({'message': 'Gagal memperbarui diagnosa'})
 
 
 #########################################################################################################################################################
 # Profile
+    
+profile_data = {
+    'namalengkap': 'Nama Lengkap Pengguna',
+    'email': 'contoh@contoh.com',
+    'nohp': '1234567890',
+    'username': 'usernamepengguna',
+    'password': '*******',
+    'alamat': 'Jalan Contoh No. 123, Kota Contoh, Indonesia'
+}
 
-@app.route('/profile')
-def profile():
-    return render_template('profile_owner.html')
+dokter_data = {
+    'namalengkap': 'Nama Lengkap Pengguna',
+    'email': 'contoh@contoh.com',
+    'nohp': '1234567890',
+    'username': 'usernamepengguna',
+    'password': '*******',
+    'pendidikanterakhir': 'pendidikanterakhir',
+    'lokasiklinik': 'Jalan Contoh No. 123, Kota Contoh, Indonesia'
+}
 
-@app.route('/profile_dokter')
-def dokter():
-    return render_template('profile_dokter.html')
 
-@app.route("/update_profile", methods=["POST"])
-def save_img():
-    token_receive = request.cookies.get(TOKEN_KEY)
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        username = payload["id"]
-        name_receive = request.form["name_give"]
-        about_receive = request.form["about_give"]
+@app.route('/profile_owner', methods=['GET', 'POST'])
+def profile_owner():
+    if request.method == 'POST':
+        try:
+            namalengkap = request.form['namalengkap']
+            username = request.form['username']
+            nohp = request.form['nohp']
+            email = request.form['email']
+            password = request.form['password']
+            alamat = request.form['alamat']
 
-        new_doc = {
-            "profile_name": name_receive, 
-            "profile_info": about_receive
-        }
-        if "file_give" in request.files:
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{username}.{extension}"
-            file.save("./static/" + file_path)
-            new_doc["profile_pic"] = filename
-            new_doc["profile_pic_real"] = file_path
+            if not (namalengkap and username and nohp and email and password and alamat):
+                return render_template('profile_owner.html', message="Please fill in all the fields.")
 
-        db.profile.update_one(
-            {"username": payload["id"]}, 
-            
-            {"$set": new_doc}
-        )
-        return jsonify({"result": "success", "msg": "Profile updated!"})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+            hashed_password = generate_password_hash(password, method='sha256')
+
+            profile_data = {
+                'namalengkap': namalengkap,
+                'username': username,
+                'nohp': nohp,
+                'email': email,
+                'password': hashed_password,
+                'alamat': alamat,
+            }
+
+            inserted_profile = db.profile.insert_one(profile_data)
+
+            if inserted_profile.inserted_id:
+                return render_template('profile_owner.html', message="Profile data saved successfully!")
+            else:
+                return render_template('profile_owner.html', message="Failed to save profile data. Please try again.")
+        except Exception as e:
+            return render_template('profile_owner.html', message=f"An error occurred: {str(e)}")
+    else:
+        return render_template('profile_owner.html', profile_data={})
     
 
+@app.route('/profile_dokter', methods=['GET', 'POST'])
+def profile_dokter():
+    if request.method == 'POST':
+        try:
+            namalengkap = request.form['namalengkap']
+            username = request.form['username']
+            nohp = request.form['nohp']
+            email = request.form['email']
+            password = request.form['password']
+            pendidikanterakhir = request.form['pendidikanterakhir']
+            lokasiklinik = request.form['lokasiklinik']
+
+            if not (namalengkap and username and nohp and email and password and pendidikanterakhir and lokasiklinik):
+                return render_template('profile_dokter.html', message="Please fill in all the fields.")
+
+            hashed_password = generate_password_hash(password, method='sha256')
+
+            dokter_data = {
+                'namalengkap': namalengkap,
+                'username': username,
+                'nohp': nohp,
+                'email': email,
+                'password': hashed_password,
+                'pendidikanterakhir': pendidikanterakhir,
+                'lokasiklinik': lokasiklinik,
+            }
+
+
+            inserted_dokter = db.dokter.insert_one(dokter_data)
+
+            if inserted_dokter.inserted_id:
+                return render_template('profile_dokter.html', message="Profile data saved successfully!")
+            else:
+                return render_template('profile_dokter.html', message="Failed to save profile data. Please try again.")
+        except Exception as e:
+            return render_template('profile_dokter.html', message=f"An error occurred: {str(e)}")
+    else:
+        return render_template('profile_dokter.html')
+    
+ 
+@app.route('/edit_profile_owner', methods=['POST'])
+def edit_profile():
+    namalengkap = request.form.get('namalengkap')
+    email = request.form.get('email')
+    nohp = request.form.get('nohp')
+    username = request.form.get('username')
+    password = request.form.get('password')
+    alamatlengkap = request.form.get('alamatlengkap')
+
+    if not (namalengkap and email and nohp and username and password and alamatlengkap):
+        return jsonify(result='error', message='Please fill in all the required fields.')
+
+    hashed_password = generate_password_hash(password, method='sha256')
+
+    updated_data = {
+        'namalengkap': namalengkap,
+        'email': email,
+        'nohp': nohp,
+        'username': username,
+        'password': hashed_password,
+        'alamatlengkap': alamatlengkap,
+    }
+
+    return jsonify(result='success', **updated_data)
+
+
+@app.route('/edit_profile_dokter', methods=['POST'])
+def edit_profile_dokter():
+    namalengkap = request.form.get('namalengkap')
+    email = request.form.get('email')
+    nohp = request.form.get('nohp')
+    username = request.form.get('username')
+    password = request.form.get('password')
+    pendidikanterakhir = request.form.get('pendidikanterakhir')
+    lokasiklinik = request.form.get('lokasiklinik')
+    if not (namalengkap and username and nohp and email and password and pendidikanterakhir and lokasiklinik):
+             return render_template('profile_owner.html', message="Please fill in all the fields.")
+
+    hashed_password = generate_password_hash(password, method='sha256')
+
+
+    update_data = {
+    'namalengkap': namalengkap,
+    'email': email,
+    'nohp': nohp,
+    'username': username,
+    'pendidikanterakhir': pendidikanterakhir,
+    'lokasiklinik': lokasiklinik,
+}
+
+    return jsonify(result='success', **update_data)
+
+
+#########################################################################################################################################################
 # Ulasan
-collection = db['ulasan']
+col_ulasan = db.ulasan
 ulasan_dokter = [] 
+
+@app.route('/get_doctor_name/<string:doctor_id>', methods=['GET'])
+def get_doctor_name(doctor_id):
+    doctor = db.doctors.find_one({'_id': ObjectId(doctor_id)})
+    if doctor:
+        return doctor['namalengkap']
+    return 'Dokter Tidak Ditemukan'
 
 
 @app.route('/daftar_ulasan')
 def daftar():
-    return render_template('daftar_ulasan.html')
+    doctors = db.doctors.find()
+    return render_template("daftar_ulasan.html", doctors=doctors)
 
-@app.route('/form_ulasan', methods=['GET'])
-def show_form():
 
-    ulasan_entries = db.ulasan.find().sort("_id", -1).limit(5)
+@app.route('/form_ulasan/<string:doctor_id>', methods=['GET'])
+def show_form_ulasan(doctor_id):
+    doctor = db.doctors.find_one({'_id': ObjectId(doctor_id)})
+    if doctor:
+        ulasan_entries = db.ulasan.find({'doctor_id': ObjectId(doctor_id)}).sort("_id", -1).limit(5)
+        return render_template('form_ulasan.html', ulasan_entries=ulasan_entries, doctor_id=doctor_id, doctor=doctor)
+    else:
+        return 'Dokter Tidak Ditemukan'
 
-    return render_template('form_ulasan.html', ulasan_entries=ulasan_entries)
-
-@app.route('/form_ulasan', methods=['POST'])
-def submit_form():
+@app.route('/submit_form_ulasan/<string:doctor_id>', methods=['POST'])
+def submit_form_ulasan(doctor_id):
     ulasan_text = request.form.get('ulasan')
     rating = request.form.get('rating')
 
     doc = {
         'ulasan': ulasan_text,
-        'rating': rating
+        'rating': rating,
+        'doctor_id': ObjectId(doctor_id)
     }
     db.ulasan.insert_one(doc)
 
-    return redirect(url_for('ulasan'))
+    return redirect(url_for('show_specific_reviews', doctor_id=doctor_id))
 
-@app.route('/halaman_ulasan', methods=['GET'])
-def ulasan():
-    ulasan_entries = db.ulasan.find().sort("_id", -1).limit(15)
 
-    return render_template('halaman_ulasan.html', ulasan_entries=ulasan_entries)
+@app.route('/reviews/<string:doctor_id>')
+def show_specific_reviews(doctor_id):
+    ulasan_entries = db.ulasan.find({'doctor_id': ObjectId(doctor_id)}).sort("_id", -1).limit(15)
+    
+    return render_template('halaman_ulasan.html', ulasan_entries=ulasan_entries, doctor_id=doctor_id)
 
-@app.route('/hapus/<string:review_id>', methods=['POST'])
-def hapus_review(review_id):
-    try:
-        result = collection.delete_one({"_id": ObjectId(review_id)})
 
-        if result.deleted_count > 0:
-            return jsonify({"message": "Ulasan berhasil dihapus."})
+@app.route('/delete_review/<string:review_id>/<string:doctor_id>', methods=['POST'])
+def delete_review(review_id, doctor_id):
+    db.ulasan.delete_one({'_id': ObjectId(review_id)})
+
+    return redirect(url_for('show_specific_reviews', doctor_id=doctor_id))
+
+@app.route('/view_doctor_reviews/<string:doctor_id>')
+def view_doctor_reviews(doctor_id):
+    if current_user.is_authenticated and current_user.id == doctor_id:
+        doctor = db.doctors.find_one({'_id': ObjectId(doctor_id)})
+        if doctor:
+            ulasan_entries = db.ulasan.find({'doctor_id': ObjectId(doctor_id)}).sort("_id", -1)
+            return render_template('halaman_ulasan_dokter.html', ulasan_entries=ulasan_entries, doctor=doctor)
         else:
-            return jsonify({"message": "Ulasan tidak ditemukan."})
-
-    except Exception as e:
-        return jsonify({"message": str(e)})
-
+            return 'Dokter Tidak Ditemukan.'
+    else:
+        return 'Anda tidak memiliki izin untuk melihat ulasan.'
 
 
 

@@ -2,233 +2,180 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Daftar Dokter</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            position: relative;
-            margin: 0;
-            padding-bottom: 100px;
-            background-image: url('/static/img/paw.jpg');
-            background-color: rgba(255, 255, 255, 0.5);
-            background-blend-mode: lighten;
-            background-size: cover;
-            min-height: 100vh;
-          }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekam Medis</title>
 
-        .navbar-brand img {
-            border-radius: 50%;
-        }
+  <!-- Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-        .navbar-brand,
-        .navbar-brand .navbar-text,
-        .navbar-nav .nav-link {
-            font-weight: bold;
-        }
+  <!-- Font Awesome CSS -->
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 
-        h2 {
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+  <!-- JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
-        .footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
-            padding: 20px 0;
-        }
+  <link rel="stylesheet" href="static/css/main.css">
 
-        .record-box {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            margin-top: 30px;
-        }
+  <style>
+    * {
+      font-family: 'Montserrat', sans-serif;
+    }
 
-        /* Your additional styles for the profile box */
-        .profile-box {
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
+    .navbar {
+      background-color: #f8f9fa;
+    }
 
-        .profile-image-box {
-            width: 30%;
-            float: left;
-        }
+    .navbar-brand img {
+      width: 80px;
+      border-radius: 50%;
+    }
 
-        .profile-image {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            /* Removed border-radius from here */
-        }
+    .navbar-nav .nav-link {
+      font-weight: bold;
+      color: #4d4a7a;
+    }
 
-        .profile-info-box {
-            width: 50%;
-            float: left;
-            padding: 20px;
-        }
+    .doctor-info {
+      display: flex;
+      border-radius: 5px;
+      background-color: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
 
-        .profile-button-box {
-            width: 20%;
-            float: left;
-            padding: 20px;
-            text-align: center;
-        }
+    .doctor-info img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
 
-        .btn-secondary {
-            width: 100%;
-        }
+    .doctor-info .info {
+      flex: 1;
+    }
 
-        .dropdown {
-            margin-left: 10px;
-        }
+    .doctor-info h4 {
+      margin-top: 25px;
+      font-weight: bold;
+      font-size: 24px;
+    }
 
-        .dropdown-menu a {
-            display: block;
-            padding: 10px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
+    .btn-lihat {
+      background-color: #4d4a7a;
+      color: #ffffff;
+      float: right;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background-color: #ffffff;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      position: relative;
+      margin: 0;
+      padding-bottom: 100px;
+      background-image: url('/static/img/paw.jpg');
+      background-color: rgba(255, 255, 255, 0.5);
+      background-blend-mode: lighten;
+      background-size: cover;
+      min-height: 100vh;
+    }
+  </style>
+
+
 </head>
 
 <body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary nav-color">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+        <img src="static/img/logotrans.png" width="80px">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="{{ url_for('static', filename='logo.png') }}" height="50" class="mr-2">
-                <span class="font-weight-bold">PawCare</span>
-            </a>
-
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
+            <div class="d-flex" role="search">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
                             Konsultasi
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
-                            <a class="dropdown-item" href="#">Daftar Dokter</a>
-                            <a class="dropdown-item" href="#">Riwayat Konsultasi</a>
-                        </div>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/daftar_dokter">Daftar Dokter</a></li>
+                            <li><a class="dropdown-item" href="/riwayat">Riwayat Konsultasi</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Rekam Medis</a>
+                        <a class="nav-link"  href="/daftar_rekamMedis">Rekam Medis</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Ulasan</a>
+                        <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Login</a>
+                        <a class="nav-link" href="/profile_owner">Profil</a>
                     </li>
                 </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mt-5">
-        <div class="record-box">
-            <h2>Daftar Ulasan</h2>
-
-            <div class="row justify-content-center"> <!-- Modified this line -->
-                <div class="col-md-8">
-                    <!-- Profile Images -->
-                    <div class="profile-box">
-                        <div class="profile-image-box">
-                            <img src="path/to/your/profile-image-1.jpg" class="img-thumbnail profile-image mb-2"
-                                alt="Profile Image 1">
-                        </div>
-                        <div class="profile-info-box">
-                            <!-- Your additional box content for Profile 1 -->
-                            <p>Dr. Yulia</p>
-                            <p>Specialis dokter kucing</p>
-                        </div>
-                        <div class="profile-button-box">
-                            <button class="btn btn-secondary" id="lihatUlasanBtn" onclick="redirectUlasan()">Lihat
-                                ulasan</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <!-- Profile Images -->
-                    <div class="profile-box">
-                        <div class="profile-image-box">
-                            <img src="path/to/your/profile-image-2.jpg" class="img-thumbnail profile-image mb-2"
-                                alt="Profile Image 2">
-                        </div>
-                        <div class="profile-info-box">
-                            <!-- Your additional box content for Profile 2 -->
-                            <p>Dr. Inayah</p>
-                            <p>Specialis dokter bedah kucing</p>
-                        </div>
-                        <div class="profile-button-box">
-                            <button class="btn btn-secondary" id="lihatUlasanBtn" onclick="redirectUlasan()">Lihat
-                                ulasan</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <!-- Profile Images -->
-                    <div class="profile-box">
-                        <div class="profile-image-box">
-                            <img src="path/to/your/profile-image-3.jpg" class="img-thumbnail profile-image mb-2"
-                                alt="Profile Image 3">
-                        </div>
-                        <div class="profile-info-box">
-                            <!-- Your additional box content for Profile 3 -->
-                            <p>Dr. Eko</p>
-                            <p> Spesialis dokter Kucing</p>
-                        </div>
-                        <div class="profile-button-box">
-                            <button class="btn btn-secondary" id="lihatUlasanBtn" onclick="redirectUlasan()">Lihat
-                                ulasan</button>
-                        </div>
-                    </div>
-                </div>
+                <a class="btn btn-outline" href="/logout">Logout</a>
             </div>
         </div>
     </div>
+</nav>
 
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container text-center">
-            <span class="text-muted">
-                <strong style="font-size: 24px;">Pawcare</strong><br>
-                &copy; 2023 oleh Tim Oracle Learning X
-            </span>
+  <section id="banner" class="py-5">
+    <div class="container">
+      <h2 class="mb-4">Daftar Dokter</h2>
+      {% for doctor in doctors %}
+      <div class="doctor-info shadow p-4 mb-3 bg-white rounded">
+        <!-- Informasi Dokter yang Ditampilkan -->
+        <img src="{{ url_for('static', filename='foto/dokter/' + doctor.foto) }}" alt="Doctor Photo">
+        <div class="info">
+          <h4>{{ doctor.namalengkap }}</h4>
+          <!-- Tombol Detail untuk Setiap Dokter -->
+          <a href="{{ url_for('show_form_ulasan', doctor_id=doctor['_id']) }}" class="btn btn-lihat" style="background-color: #00ADB5;">Details</a>
         </div>
-    </footer>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
 
 
-    <script>
-        function redirectUlasan() {
-            // Ganti URL sesuai dengan URL halaman ulasan Anda
-            window.location.href = "/halaman_ulasan";
-        }
-    </script>
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+      <span class="text-muted">
+        <strong style="font-size: 24px;">Pawcare</strong><br>
+        &copy; 2023 oleh Tim Oracle Learning X
+      </span>
+    </div>
+  </footer>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    function redirectUlasan() {
+        // Ganti URL sesuai dengan URL halaman ulasan Anda
+        window.location.href = "/halaman_ulasan";
+    }
+</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -89,7 +89,7 @@
     position: relative;
     margin: 0;
     padding-bottom: 100px;
-    background-image: url('/static/paw.jpg');
+    background-image: url('/static/img/paw.jpg');
     background-color: rgba(255, 255, 255, 0.5);
     background-blend-mode: lighten;
     background-size: cover;
@@ -124,144 +124,126 @@
   th {
     background-color: #f2f2f2;
   }
+
+  .doctor-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .info-container {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .profile-section {
+    margin-right: 20px;
+  }
+
+  .user-info {
+    flex: 1;
+  }
+
+  .table {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .profile-section img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+  }
+
+  /* CSS untuk button container dan penyesuaian layout */
+.button-container {
+  display: flex;
+  justify-content: flex-start; /* Mengatur posisi tombol ke kanan */
+  margin-left: 13%; /* Memberi jarak dari tepi kanan */
+}
+
+/* Memberikan jarak antar tombol */
+.edit-btn,
+.save-btn {
+  margin-left: 10px;
+}
+
 </style>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <a class="navbar-brand" href="#">
-        <img src="{{ url_for('static', filename='logo.png') }}" height="50" class="mr-2">
-        <span class="font-weight-bold">PawCare</span>
+      <a class="navbar-brand" href="/">
+        <img src="static/img/logotrans.png" width="80px">
       </a>
-
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
+      <div class="d-flex" role="search">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/dokterDaftar_rmd">Rekam Medis</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/dokterProfile">Profil</a>
+          </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              Konsultasi
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
-              <a class="dropdown-item" href="#">Daftar Dokter</a>
-              <a class="dropdown-item" href="#">Riwayat Konsultasi</a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Rekam Medis</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Ulasan</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Profil</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Login</a>
           </li>
         </ul>
+        <a class="btn btn-outline" href="/logout">Logout</a>
       </div>
+    </div>
     </div>
   </nav>
 
-
-  <div class="container mt-5">
-    <div class="record-box">
-      <h2>Detail Rekam Medis</h2>
-
-      <div class="header">
-        <div class="info">
-          <p>Nama: Nama Pemilik</p>
-          <p>Nomor HP: Nomor HP</p>
-        </div>
-        <div class="review-button">
-          <button class="btn btn-secondary" style="background-color: #a3a5a5">Tambah Diagnosa</button>
-        </div>
-      </div>
-      <div class="record-table">
-        <h5></h5>
-        <table id="record-table" class="table">
-          <thead>
+<h2>Daftar Rekam Medis</h2>
+<div class="record-box">
+    <h4>Rekam Medis</h4>
+    <table class="table">
+        <thead>
             <tr>
-              <th>Nama Kucing</th>
-              <th>Usia</th>
-              <th>Keluhan</th>
-              <th>Gambar</th>
-              <th>Bukti Pembayaran</th>
-              <th>Diagnosa</th>
+                <th>Nama Pemilik</th>
+                <th>Nama Kucing</th>
+                <th>Usia</th>
+                <th>Keluhan</th>
+                <th>Gambar</th>
+                <th>Bukti Pembayaran</th>
+                <th>Diagnosa</th>
+                <!-- Other table headers -->
             </tr>
-          </thead>
-          <tbody>
-            <!-- Data Rekam Medis -->
+        </thead>
+        <tbody>
+            {% for data in consultation_data %}
+            {% for user in users %}
             <tr>
-              <td>Nama </td>
-              <td>Usia</td>
-              <td>Keluhan</td>
-              <td>
-                <div class="image-container">
-                  <img class="image" src="path/to/your/image.jpg" alt="Image">
-                </div>
-              </td>
-              <td>
-                <div class="image-container">
-                  <img class="image" src="path/to/your/image.jpg" alt="Image">
-              </td>
-              <td>Diagnosa</td>
+                <td>{{ user['namalengkap'] }}</td>
+                <td>{{ data['nama_kucing'] }}</td>
+                <td>{{ data['jenis_kucing'] }}</td>
+                <td>{{ data['usia_kucing'] }}</td>
+                <td>{{ data['keluhan'] }}</td>
+                <td>
+                  {% if data.foto_keluhan %}
+                  <img src="{{ url_for('static', filename='foto/keluhan/' + riwayat.foto_keluhan) }}" alt="Foto Keluhan" class="img-fluid">
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+                <td>
+                  {% if data.bukti_pembayaran %}
+                  <img src="{{ url_for('static', filename='foto/pembayaran/' + riwayat.bukti_pembayaran) }}" alt="Bukti Pembayaran" class="img-fluid">
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
             </tr>
-            <!-- Data Rekam Medis Lainnya -->
-            <tr>
-              <td>Nama Kucing</td>
-              <td>Usia</td>
-              <td>Keluhan</td>
-              <td>
-                <div class="image-container">
-                  <img class="image" src="path/to/your/image.jpg" alt="Image">
-                </div>
-              </td>
-              <td>
-                <div class="image-container">
-                  <img class="image" src="path/to/your/image.jpg" alt="Image">
-              </td>
-              <td>Diagnosa</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="record-box">
-        <!-- ... (bagian HTML yang lain) ... -->
-
-        <!-- Formulir Pengeditan -->
-        <div id="edit-form" style="display: none;">
-          <h5>Edit Data Rekam Medis</h5>
-          <form>
-            <div class="form-group">
-              <label for="edited-name">Nama Kucing:</label>
-              <input type="text" class="form-control" id="edited-name">
-            </div>
-            <div class="form-group">
-              <label for="edited-age">Usia:</label>
-              <input type="text" class="form-control" id="edited-age">
-            </div>
-            <div class="form-group">
-              <label for="edited-complaint">Keluhan:</label>
-              <textarea class="form-control" id="edited-complaint"></textarea>
-            </div>
-            <!-- ... (lanjutkan sesuai kebutuhan) -->
-          </form>
-        </div>
+                {% endfor %}
+            {% endfor %}
         </tbody>
-        </table>
-      </div>
-    </div>
-      <button class="btn btn-secondary" style="background-color: #a3a5a5" onclick="toggleEditForm()">Edit</button>
-      <button class="btn btn-secondary" style="background-color: #a3a5a5" onclick="saveChanges()">Simpan</button>
-    </div>
-  </div>
+      </table>
+        </div>
 
 
   <footer class="footer mt-auto py-3 bg-light">
@@ -272,6 +254,9 @@
       </span>
     </div>
   </footer>
+  <script>
+    
+  </script>
 
 </body>
 

@@ -76,9 +76,9 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary nav-color">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a href="/">
+            <a class="navbar-brand" href="/">
                 <img src="static/img/logotrans.png" width="80px">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -86,35 +86,23 @@
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="d-flex" role="search">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Konsultasi
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/dokterDaftar">Daftar Dokter</a></li>
-                            <li><a class="dropdown-item" href="/riwayat">Riwayat Konsultasi</a></li>
-                        </ul>
-                    </li>
                     <li class="nav-item">
-                        <a class="nav-link"  href="/rekamMedis">Rekam Medis</a>
+                        <a class="nav-link" href="/dokterDaftar_rmd">Rekam Medis</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/profile">Profil</a>
+                        <a class="nav-link" href="/dokterProfile">Profil</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                        Login
-                        </button>
                     </li>
                 </ul>
+                <a class="btn btn-outline" href="/logout">Logout</a>
             </div>
+        </div>
         </div>
     </nav>
 

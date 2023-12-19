@@ -8,11 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-  <!-- Letakkan script berikut di bawah script Bootstrap dan sebelum tag </body> -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
   <style>
     /* General Styles */
     * {
@@ -25,7 +20,6 @@
     }
 
     .navbar-brand,
-    .navbar-brand .navbar-text,
     .navbar-nav .nav-link {
       font-weight: bold;
     }
@@ -63,7 +57,6 @@
       text-align: left;
     }
 
-
     /* Buttons */
     .edit-profile-button,
     .logout-button {
@@ -71,7 +64,8 @@
       color: #fff;
       border: none;
       border-radius: 5px;
-      padding: 10px 100px;
+      padding: 10px 20px;
+      /* Adjusted padding for better appearance */
       cursor: pointer;
       margin-right: 10px;
     }
@@ -87,9 +81,9 @@
     }
 
     .info-box h3 {
-      font-size: 16px; /* Ubah ukuran teks judul sesuai keinginan */
-      font-weight: bold; /* Teks judul akan menjadi tebal */
-      margin-bottom: 8px; /* Berikan jarak ke bawah antara judul dan paragraf */
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
     }
 
     .left-info,
@@ -98,13 +92,10 @@
       max-width: 400px;
     }
 
-
-
     .button {
       margin-top: 10px;
     }
 
-    
     .footer {
       position: fixed;
       bottom: 0;
@@ -112,8 +103,9 @@
       background-color: #222831;
       color: white;
       text-align: center;
-      z-index: 999; 
-      margin-left: -200px;
+      z-index: 999;
+      padding: 10px 0;
+      /* Adjusted padding for better appearance */
     }
 
     body {
@@ -121,56 +113,56 @@
       position: relative;
       margin: 0;
       padding-bottom: 100px;
-      background-image: url('/static/paw.jpg');
+      background-image: url('/static/img/paw.jpg');
       background-color: rgba(255, 255, 255, 0.5);
       background-blend-mode: lighten;
       background-size: cover;
       min-height: 100vh;
     }
   </style>
+
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary nav-color">
     <div class="container">
-      <a class="navbar-brand" href="#">
-        <img src="{{ url_for('static', filename='logo.png') }}" height="50" class="mr-2">
-        <span class="font-weight-bold">PawCare</span>
-      </a>
+        <a class="navbar-brand" href="/">
+        <img src="static/img/logotrans.png" width="80px">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              Konsultasi
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
-              <a class="dropdown-item" href="#">Daftar Dokter</a>
-              <a class="dropdown-item" href="#">Riwayat Konsultasi</a>
+            <div class="d-flex" role="search">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Konsultasi
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/daftar_dokter">Daftar Dokter</a></li>
+                            <li><a class="dropdown-item" href="/riwayat">Riwayat Konsultasi</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"  href="/daftar_rekamMedis">Rekam Medis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile_owner">Profil</a>
+                    </li>
+                </ul>
+                <a class="btn btn-outline" href="/logout">Logout</a>
             </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Rekam Medis</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Ulasan</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Profil</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Login</a>
-          </li>
-        </ul>
-      </div>
+        </div>
     </div>
-  </nav>
+</nav>
+
 
   <div class="hero-body">
     <div class="container">
@@ -191,104 +183,193 @@
           Logout&nbsp;&nbsp;&nbsp;<span class="icon is-small"><i class="bi bi-box-arrow-right"
               aria-hidden="true"></i></span>
         </a>
-
       </div>
 
-      <div class="container">
-        <div class="info-box">
-          <div class="left-info">
-            <h3>Nama Lengkap</h3>
-            <p>Nama Lengkap Pengguna</p>
-            <h3>Email</h3>
-            <p>contoh@contoh.com</p>
-            <h3>Nomor Telephone</h3>
-            <p>1234567890</p>
+      <div class="info-box">
+        <div class="left-info">
+          <form method="POST" action="{{ url_for('register') }}" class="mt-4" enctype="multipart/form-data">
+            <!-- Your form fields go here -->
+          </form>
+          <h3>Nama Lengkap</h3>
+          <p id="namaLengkap"></p>
+          <h3>Email</h3>
+          <p id="contoh@contoh.com"></p>
+          <h3>Nomor Telephone</h3>
+          <p id="1234567890"></p>
+        </div>
+        <div class="right-info">
+          <h3>Username</h3>
+          <p id="username_pengguna"></p>
+          <h3>Password</h3>
+          <p id="password"></p>
+          <h3>Alamat Lengkap</h3>
+          <p id="Jalan_Contoh_No_123_Kota_Contoh_Indonesia"></p>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Modal Edit Profile -->
+    <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal-edit-label"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-edit-label">Edit Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          <div class="right-info">
-            <h3>Username</h3>
-            <p>usernamepengguna</p>
-            <h3>Password</h3>
-            <p>******* <!-- Password dienkripsi atau ditampilkan sebagai karakter bintang --> </p>
-            <h3>Alamat Lengkap</h3>
-            <p>Jalan Contoh No. 123, Kota Contoh, Indonesia</p>
+          <div class="modal-body">
+
+            <!-- Formulir Edit Profile -->
+            <form method="POST" action="/edit_profile_owner" class="mt-4" enctype="multipart/form-data"
+              id="edit-profile-form">
+              <div class="form-group">
+                <label for="edit-profile-name">Nama Lengkap:</label>
+                <input type="text" class="form-control" id="edit-profile-name" name="name_give"
+                  placeholder="Nama Lengkap">
+              </div>
+              <div class="form-group">
+                <label for="edit-profile-email">Email:</label>
+                <input type="email" class="form-control" id="edit-profile-email" name="email_give" placeholder="Email">
+              </div>
+              <div class="form-group">
+                <label for="edit-profile-phone">Nomor Telephone:</label>
+                <input type="text" class="form-control" id="edit-profile-phone" name="phone_give"
+                  placeholder="Nomor Telephone">
+              </div>
+              <div class="form-group">
+                <label for="edit-profile-username">Username:</label>
+                <input type="text" class="form-control" id="edit-profile-username" name="username_give"
+                  placeholder="Username">
+              </div>
+              <div class="form-group">
+                <label for="edit-profile-password">Password:</label>
+                <input type="password" class="form-control" id="edit-profile-password" name="password_give"
+                  placeholder="Password">
+              </div>
+              <div class="form-group">
+                <label for="edit-profile-address">Alamat Lengkap:</label>
+                <textarea class="form-control" id="edit-profile-address" name="address_give" rows="3"
+                  placeholder="alamat lengkap"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="edit-profile-image">Upload Foto Profile:</label>
+                <input type="file" class="form-control-file" id="edit-profile-image" name="file_give">
+              </div>
+              <button type="button" class="btn btn-secondary" id="saveChangesButton">Simpan Perubahan</button>
+            </form>
+            <!-- Akhir Formulir Edit Profile -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
           </div>
         </div>
       </div>
-
-
-
-
-<!-- Modal Edit Profile -->
-<div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal-edit-label"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modal-edit-label">Edit Profile</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- Formulir Edit Profile -->
-        <form id="edit-profile-form" action="{{ url_for('save_img') }}" method="POST" enctype="multipart/form-data">
-          <div class="form-group">
-            <label for="edit-profile-name">Nama Lengkap:</label>
-            <input type="text" class="form-control" id="edit-profile-name" name="name_give" placeholder="Nama Lengkap">
-          </div>
-          <div class="form-group">
-            <label for="edit-profile-email">Email:</label>
-            <input type="email" class="form-control" id="edit-profile-email" name="about_give" placeholder="Email">
-          </div>
-          <div class="form-group">
-            <label for="edit-profile-phone">Nomor Telephone:</label>
-            <input type="text" class="form-control" id="edit-profile-phone" name="about_give"
-              placeholder="Nomor Telephone">
-          </div>
-          <div class="form-group">
-            <label for="edit-profile-username">Username:</label>
-            <input type="text" class="form-control" id="edit-profile-username" name="about_give" placeholder="Username">
-          </div>
-          <div class="form-group">
-            <label for="edit-profile-password">Password:</label>
-            <input type="password" class="form-control" id="edit-profile-password" name="about_give"
-              placeholder="Password">
-          </div>
-          <div class="form-group">
-            <label for="edit-profile-address">Alamat Lengkap:</label>
-            <textarea class="form-control" id="edit-profile-address" name="about_give" rows="3"
-              placeholder="Alamat Lengkap"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="edit-profile-image">Upload Foto Profile:</label>
-            <input type="file" class="form-control-file" id="edit-profile-image" name="file_give">
-          </div>
-          <button type="submit" class="btn btn-secondary">Simpan Perubahan</button>
-        </form>
-        <!-- Akhir Formulir Edit Profile -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-      </div>
     </div>
-  </div>
-</div>
 
-<div class="footer">
-  <footer class="py-3 bg-light">
-    <div class="container text-center">
-      <span class="text-muted">
-        <strong style="font-size: 24px;">Pawcare</strong><br>
-        &copy; 2023 oleh Tim Oracle Learning X
-      </span>
-    </div>
-  </footer>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container text-center">
+        <span class="text-muted">
+          <strong style="font-size: 24px;">Pawcare</strong><br>
+          &copy; 2023 oleh Tim Oracle Learning X
+        </span>
+      </div>
+    </footer>
 
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+
+
+      $(document).ready(function () {
+        $("#saveChangesButton").click(function () {
+          // Serialize form data
+          var formData = $("#edit-profile-form").serialize();
+
+          // Use AJAX to submit the form data to the server
+          $.ajax({
+            type: "POST",
+            url: "/edit_profile_owner",
+            data: formData,
+            success: function (data) {
+              // Handle success
+              console.log("Data successfully submitted:", data);
+              // You might want to update the UI or take additional actions here
+            },
+            error: function (error) {
+              // Handle error
+              console.log("Error submitting form:", error);
+            }
+          });
+        });
+      });
+      document.addEventListener('DOMContentLoaded', function () {
+        var urlParams = new URLSearchParams(window.location.search);
+
+        $('#saveChangesButton').click(function () {
+          // Mengambil nilai formulir
+          var formData = new FormData($('#edit-profile-form')[0]);
+
+          // AJAX request untuk memperbarui data profil
+          $.ajax({
+            type: 'POST',
+            url: $('#edit-profile-form').attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+              // Memperbarui konten dengan data yang diterima
+              $('#namaLengkap').text(data.namalengkap || 'Nama Lengkap Pengguna');
+              $('#contoh@contoh.com').text(data.email || 'contoh@contoh.com');
+              $('#1234567890').text(data.nohp || '1234567890');
+              $('#username_pengguna').text(data.username || 'usernamepengguna');
+              $('#password').text(data.password ? '*******' : 'Password tidak diubah');
+              $('#Jalan_Contoh_No_123_Kota_Contoh_Indonesia').text(data.alamat || 'Jalan Contoh No. 123, Kota Contoh, Indonesia');
+
+              // Mengarahkan ke halaman pemilik profil tanpa menambahkan data ke URL
+              window.location.href = '/profile_owner';
+            },
+            error: function (error) {
+              console.error('Error updating profile:', error);
+            }
+          });
+        });
+
+        // Update the content with the received data
+        document.getElementById('namaLengkap').innerText = urlParams.get('namalengkap') || 'Nama Lengkap Pengguna';
+        document.getElementById('contoh@contoh.com').innerText = urlParams.get('email') || 'contoh@contoh.com';
+        document.getElementById('1234567890').innerText = urlParams.get('nohp') || '1234567890';
+        document.getElementById('username_pengguna').innerText = urlParams.get('username') || 'usernamepengguna';
+        document.getElementById('password').innerText = urlParams.get('password') ? '*******' : 'Password tidak diubah';
+        document.getElementById('Jalan_Contoh_No_123_Kota_Contoh_Indonesia').innerText = urlParams.get('alamat') || 'Jalan Contoh No. 123, Kota Contoh, Indonesia';
+
+        // Set the profile image source dynamically
+        var profileImageElement = document.querySelector('.profile-image');
+        profileImageElement.src = urlParams.get('profileImage') || 'path/to/default/image.jpg';
+
+        // Show or initialize the modal
+        $('#modal-edit').modal('show');
+        // Or if you want to initialize the modal before hiding
+        // $('#modal-edit').modal();
+        // $('#modal-edit').modal('hide');
+
+        // Update userData and store in localStorage
+        var userData = {
+          namalengkap: urlParams.get('namalengkap'),
+          email: urlParams.get('email'),
+          nohp: urlParams.get('nohp'),
+          username: urlParams.get('username'),
+          password: urlParams.get('password'),
+          alamat: urlParams.get('alamat')
+        };
+        localStorage.setItem('userData', JSON.stringify(userData));
+      });
+    </script>
 </body>
 
 </html>

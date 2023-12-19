@@ -38,133 +38,270 @@
             position: absolute;
             bottom: 0;
             width: 100%;
-            background-color: #ffffff;
-            color: white;
             text-align: center;
-            padding: 20px 0; 
+            padding: 20px 0;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
             position: relative;
             margin: 0;
-            padding-bottom: 100px; 
-            background-image: url('../static/paw.jpg'); 
-            background-color: rgba(255, 255, 255, 0.5); 
-            background-blend-mode: lighten; 
-            background-size: cover; 
-            min-height: 100vh; 
+            padding-bottom: 100px;
+            background-image: url('/static/img/paw.jpg');
+            background-color: rgba(255, 255, 255, 0.5);
+            background-blend-mode: lighten;
+            background-size: cover;
+            min-height: 100vh;
         }
+
+        .record-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+
+
+        h2 {
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            margin-top: 2%;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
-    
+
         th,
         td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
-    
+
         th {
             background-color: #f2f2f2;
         }
-    
-        .record-box {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-            margin-top: 30px;
+
+        .detail-button {
+            background-color: #00ADB5;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-    
+
+        .detail-button:hover {
+            background-color: #00858a;
+        }
+
+        .doctor-info {
+            display: flex;
+            border-radius: 5px;
+            background-color: white;
+            margin-bottom: 20px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .doctor-info img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .doctor-info .info {
+            flex: 1;
+        }
+
+        .doctor-info h4 {
+            margin-top: 25px;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .btn-lihat {
+            background-color: #4d4a7a;
+            color: #ffffff;
+            float: right;
+        }
     </style>
+    <script>
+        function showDetail(userId) {
+
+            window.location.href = `/user_details/${userId}`;
+        }
+            function submitDiagnosa(consultationId) {
+                const formData = new FormData(document.getElementById(`diagnosisForm_${consultationId}`));
+                fetch('/tambah_diagnosa', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message); // You can handle the response as needed
+                    location.reload(); // Refresh the page after submitting the diagnosis
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle errors if any
+                });
+            }
+
+            function editDiagnosa(consultationId) {
+                document.getElementById(`diagnosaDiv_${consultationId}`).style.display = 'none';
+                document.getElementById(`editDiagnosaForm_${consultationId}`).style.display = 'block';
+            }
+        
+            function updateDiagnosa(consultationId) {
+                const editedDiagnosa = document.querySelector(`#editDiagnosaForm_${consultationId} input[name='edited_diagnosa']`).value;
+        
+                fetch('/update_diagnosa', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        konsultasi_id: consultationId,
+                        edited_diagnosa: editedDiagnosa
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message); // You can handle the response as needed
+                    location.reload(); // Refresh the page after updating the diagnosis
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle errors if any
+                });
+            }
+        </script>
+        
+
+
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="/">
-            <img src="static/img/logotrans.png" width="80px">
+                <img src="static/img/logotrans.png" width="80px">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
-                <div class="d-flex" role="search">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="konsultasiDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Konsultasi
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="konsultasiDropdown">
-                                <a class="dropdown-item" href="#">Daftar Dokter</a>
-                                <li><a class="dropdown-item" href="/riwayat_konsultasi">Riwayat Konsultasi</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link"  href="/daftar_rekam_medis">Rekam Medis</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/profile">Profil</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                            Login
-                            </button>
-                        </li>
-                    </ul>
-                </div>
+            <div class="d-flex" role="search">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dokterDaftar_rmd">Rekam Medis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/daftar_ulasan">Ulasan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dokterProfile">Profil</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                    </li>
+                </ul>
+                <a class="btn btn-outline" href="/logout">Logout</a>
             </div>
         </div>
+        </div>
     </nav>
-    <div class="container mt-5 record-box">
-        <h2 class="mb-4">Rekam Medis</h2>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nama Pemilik</th>
-                    <th>Nama Kucing</th>
-                    <th>Jenis Kucing</th>
-                    <th>Usia</th>
-                    <th>Detail</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Nama Pemilik 1</td>
-                    <td>Nama Kucing 1</td>
-                    <td>Jenis Kucing 1</td>
-                    <td>Usia 1</td>
-                    <td><button class="btn btn-primary detail-button" style="background-color: #4d4a7a;">Detail</button></td>
-                </tr>
-                <tr>
-                    <td>Nama Pemilik 2</td>
-                    <td>Nama Kucing 2</td>
-                    <td>Jenis Kucing 2</td>
-                    <td>Usia 2</td>
-                    <td><button class="btn btn-primary detail-button" style="background-color: #4d4a7a;">Detail</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <section id="banner" class="py-5">
+        <!-- dokterDaftar_rmd.html -->
+        <h2>Daftar Rekam Medis</h2>
+        <div class="record-box">
+            <h4>Rekam Medis</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nama Pemilik</th>
+                        <th>Nama Kucing</th>
+                        <th>Jenis Kucing</th>
+                        <th>Usia Kucing</th>
+                        <th>Keluhan</th>
+                        <th>Foto Keluhan</th>
+                        <th>Bukti Pembayaran</th>
+                        <th>Diagnosa</th>
+                        <th>Button</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        {% for data in consultation_data %}
+                            <tr id="consultation_{{ data['_id'] }}">
+                                <td>{{ user['namalengkap'] }}</td>
+                                <td>{{ data['nama_kucing'] }}</td>
+                                <td>{{ data['jenis_kucing'] }}</td>
+                                <td>{{ data['usia_kucing'] }}</td>
+                                <td>{{ data['keluhan'] }}</td>
+                                <td>
+                                    {% if data['foto_keluhan'] %}
+                                        <img src="{{ url_for('static', filename='uploads/' + data['foto_keluhan']) }}"
+                                            alt="Foto Keluhan" height="50">
+                                    {% else %}
+                                        Tidak ada foto
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data['bukti_pembayaran'] %}
+                                        <img src="{{ url_for('static', filename='uploads/' + data['bukti_pembayaran']) }}"
+                                            alt="Bukti Pembayaran" height="50">
+                                    {% else %}
+                                        Tidak ada foto
+                                    {% endif %}
+                                    <td>
+                                        {% if not data['diagnosa'] %}
+                                            <form id="diagnosisForm_{{ data['_id'] }}" class="diagnosis-form">
+                                                <input type="hidden" name="konsultasi_id" value="{{ data['_id'] }}">
+                                                <input type="text" name="diagnosa" placeholder="Tambahkan Diagnosa">
+                                                <button type="button" onclick="submitDiagnosa('{{ data['_id'] }}')">Submit</button>
+                                            </form>
+                                        {% else %}
+                                            <div id="diagnosaDiv_{{ data['_id'] }}">
+                                                {{ data['diagnosa'] }}
+                                                <button type="button" onclick="editDiagnosa('{{ data['_id'] }}')">Edit</button>
+                                            </div>
+                                            <form id="editDiagnosaForm_{{ data['_id'] }}" class="edit-diagnosis-form" style="display: none;">
+                                                <input type="hidden" name="konsultasi_id" value="{{ data['_id'] }}">
+                                                <input type="text" name="edited_diagnosa" value="{{ data['diagnosa'] }}">
+                                                <button type="button" onclick="updateDiagnosa('{{ data['_id'] }}')">Update</button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                    
+                                <td>
+                                    <!-- Other columns or actions -->
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>
+    </section>
+
 
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
-          <span class="text-muted">
-            <strong style="font-size: 24px;">Pawcare</strong><br>
-            &copy; 2023 oleh Tim Oracle Learning X
-          </span>
+            <span class="text-muted">
+                <strong style="font-size: 24px;">Pawcare</strong><br>
+                &copy; 2023 oleh Tim Oracle Learning X
+            </span>
         </div>
-      </footer>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
