@@ -1,4 +1,4 @@
-﻿blinker
+blinker
 certifi
 charset-normalizer
 click
@@ -6,9 +6,12 @@ colorama
 dnspython
 email-validator
 Flask
+Flask-Login
 Flask-WTF
 idna
 itsdangerous
+Jinja2
+MarkupSafe
 pymongo
 python-dotenv
 requests
