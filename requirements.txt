@@ -4,14 +4,14 @@ charset-normalizer
 click
 colorama
 dnspython
+email-validator
 Flask
+Flask-WTF
 idna
 itsdangerous
-Jinja2
-MarkupSafe
-PyJWT
 pymongo
 python-dotenv
 requests
 urllib3
 Werkzeug
+WTForms
