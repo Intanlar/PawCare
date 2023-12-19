@@ -5,7 +5,6 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for
 from flask import session
 from flask_login import logout_user
 from flask_login import UserMixin
-import jwt
 from pymongo import MongoClient, errors
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
@@ -19,17 +18,13 @@ import traceback
 import hashlib
 from werkzeug.utils import secure_filename
 from bson import ObjectId
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 SECRET_KEY = 'SPARTA'
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = '2f6721334df9da42e670654a7de0dffe8b70f80f5617511f' 
-jwt = JWTManager(app)
 
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
 
 
 TOKEN_KEY = 'mytoken'
@@ -74,13 +69,6 @@ class User(UserMixin):
     def __init__(self, user_id):
         self.id = user_id
 
-@login_manager.user_loader
-def load_user(user_id):
-    user_data = db.users.find_one({'_id': user_id})
-    if user_data:
-        user = User(user_data['_id'])  # Pass the user_id when creating the User object
-        return user
-    return None
 
 def save_profilePhoto(profile_image, folder='static/foto/owner/profile/'):
     if not os.path.exists(folder):
@@ -184,14 +172,6 @@ def ownerDashboard():
 class Doctor(UserMixin):
     def __init__(self, doctor_id):
         self.id = doctor_id
-
-@login_manager.user_loader
-def load_doctor(doctor_id):
-    doctor_data = db.doctors.find_one({'_id': ObjectId(doctor_id)})
-    if doctor_data:
-        doctor = Doctor(str(doctor_data['_id']))  # Ensure the ID matches your requirements
-        return doctor
-    return None
 
 def save_photo(foto, folder='static/foto/dokter/'):
     if not os.path.exists(folder):
@@ -320,16 +300,6 @@ def utility_processor():
 class User(UserMixin):
     def __init__(self, id):
         self.id = id
-
-@login_manager.user_loader
-def load_user(user_id):
-    user_data = db.users.find_one({'_id': user_id})
-    if user_data:
-        user = User(user_data['_id']) 
-        return user
-    return None
-
-
 
 
 @app.route('/form_konsultasi/<string:doctor_id>', methods=['GET'])
